@@ -65,8 +65,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents txtDaysPrior As System.Windows.Forms.TextBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
-    Friend WithEvents cmbCallTime As System.Windows.Forms.ComboBox
-    Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents lblMsg As System.Windows.Forms.Label
     Friend WithEvents btnFTP As System.Windows.Forms.Button
@@ -85,43 +83,41 @@ Public Class HMM_IVR_Console
     Friend WithEvents txtCustID As System.Windows.Forms.TextBox
     <System.Diagnostics.DebuggerStepThrough()> Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(HMM_IVR_Console))
-        Me.Label15 = New System.Windows.Forms.Label
-        Me.btnDeleteType = New System.Windows.Forms.Button
-        Me.btnDefaultAreaCodeHelp = New System.Windows.Forms.Button
-        Me.btnProviderListHelp = New System.Windows.Forms.Button
-        Me.btnMeetingTypesHelp = New System.Windows.Forms.Button
-        Me.bntScheduledDateHelp = New System.Windows.Forms.Button
-        Me.txtScheduledDaysPrior = New System.Windows.Forms.TextBox
-        Me.Label14 = New System.Windows.Forms.Label
-        Me.Label12 = New System.Windows.Forms.Label
-        Me.lblTypeMsg = New System.Windows.Forms.Label
-        Me.btnAddNew = New System.Windows.Forms.Button
-        Me.txtNewType = New System.Windows.Forms.TextBox
-        Me.ListBox2 = New System.Windows.Forms.ListBox
-        Me.Label7 = New System.Windows.Forms.Label
-        Me.Label5 = New System.Windows.Forms.Label
-        Me.ListBox1 = New System.Windows.Forms.ListBox
-        Me.Label6 = New System.Windows.Forms.Label
-        Me.txtDaysPrior = New System.Windows.Forms.TextBox
-        Me.Label4 = New System.Windows.Forms.Label
-        Me.cmbCallTime = New System.Windows.Forms.ComboBox
-        Me.Label3 = New System.Windows.Forms.Label
-        Me.Label2 = New System.Windows.Forms.Label
-        Me.lblMsg = New System.Windows.Forms.Label
-        Me.btnFTP = New System.Windows.Forms.Button
-        Me.btnCreateFile = New System.Windows.Forms.Button
-        Me.btnCallLogicHelp = New System.Windows.Forms.Button
-        Me.Label11 = New System.Windows.Forms.Label
-        Me.lblCallLogic = New System.Windows.Forms.Label
-        Me.ChooseCSV = New System.Windows.Forms.Button
-        Me.chkUseCSV = New System.Windows.Forms.CheckBox
-        Me.lblCSVFile = New System.Windows.Forms.Label
-        Me.Label17 = New System.Windows.Forms.Label
-        Me.txtCustID = New System.Windows.Forms.TextBox
-        Me.txtAreaCode = New System.Windows.Forms.TextBox
-        Me.Label1 = New System.Windows.Forms.Label
-        Me.lblInsightReport = New System.Windows.Forms.Label
-        Me.ChooseInsightReport = New System.Windows.Forms.Button
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.btnDeleteType = New System.Windows.Forms.Button()
+        Me.btnDefaultAreaCodeHelp = New System.Windows.Forms.Button()
+        Me.btnProviderListHelp = New System.Windows.Forms.Button()
+        Me.btnMeetingTypesHelp = New System.Windows.Forms.Button()
+        Me.bntScheduledDateHelp = New System.Windows.Forms.Button()
+        Me.txtScheduledDaysPrior = New System.Windows.Forms.TextBox()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.Label12 = New System.Windows.Forms.Label()
+        Me.lblTypeMsg = New System.Windows.Forms.Label()
+        Me.btnAddNew = New System.Windows.Forms.Button()
+        Me.txtNewType = New System.Windows.Forms.TextBox()
+        Me.ListBox2 = New System.Windows.Forms.ListBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.ListBox1 = New System.Windows.Forms.ListBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtDaysPrior = New System.Windows.Forms.TextBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.lblMsg = New System.Windows.Forms.Label()
+        Me.btnFTP = New System.Windows.Forms.Button()
+        Me.btnCreateFile = New System.Windows.Forms.Button()
+        Me.btnCallLogicHelp = New System.Windows.Forms.Button()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.lblCallLogic = New System.Windows.Forms.Label()
+        Me.ChooseCSV = New System.Windows.Forms.Button()
+        Me.chkUseCSV = New System.Windows.Forms.CheckBox()
+        Me.lblCSVFile = New System.Windows.Forms.Label()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.txtCustID = New System.Windows.Forms.TextBox()
+        Me.txtAreaCode = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblInsightReport = New System.Windows.Forms.Label()
+        Me.ChooseInsightReport = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Label15
@@ -298,26 +294,6 @@ Public Class HMM_IVR_Console
         Me.Label4.Size = New System.Drawing.Size(64, 23)
         Me.Label4.TabIndex = 92
         Me.Label4.Text = "Place call"
-        '
-        'cmbCallTime
-        '
-        Me.cmbCallTime.CausesValidation = False
-        Me.cmbCallTime.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cmbCallTime.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.cmbCallTime.Items.AddRange(New Object() {"8 am", "8:30 am", "9 am", "10 am", "11 am", "12 pm", "2 pm", "4 pm", "5 pm", "5:30 pm"})
-        Me.cmbCallTime.Location = New System.Drawing.Point(464, 47)
-        Me.cmbCallTime.Name = "cmbCallTime"
-        Me.cmbCallTime.Size = New System.Drawing.Size(104, 21)
-        Me.cmbCallTime.TabIndex = 91
-        '
-        'Label3
-        '
-        Me.Label3.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(324, 50)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(140, 24)
-        Me.Label3.TabIndex = 90
-        Me.Label3.Text = "Earliest Time to Call (PST):"
         '
         'Label2
         '
@@ -504,8 +480,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtDaysPrior)
         Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.cmbCallTime)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.btnDefaultAreaCodeHelp)
         Me.Controls.Add(Me.btnDeleteType)
@@ -513,7 +487,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.2)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -521,65 +495,65 @@ Public Class HMM_IVR_Console
 
 #End Region
     Dim configPath As String
-    Dim callHour As String
-    Dim callMinute As String
+    'Dim callHour As String
+    'Dim callMinute As String
 
     Private Sub HMM_IVR_Console_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        configPath = ConfigurationSettings.AppSettings("AppConfigPath").ToString
+        configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
         GetConfigValues()
-        If ConfigurationSettings.AppSettings("UseCSV").ToUpper = "TRUE" Then
+        If ConfigurationManager.AppSettings("UseCSV").ToUpper = "TRUE" Then
             chkUseCSV.Checked = True
         End If
     End Sub
     Private Sub GetConfigValues()
-        txtCustID.Text = Trim(ConfigurationSettings.AppSettings("CustId").ToString)
-        txtDaysPrior.Text = Trim(ConfigurationSettings.AppSettings("DaysPrior").ToString)
-        txtScheduledDaysPrior.Text = Trim(ConfigurationSettings.AppSettings("ScheduledDaysPrior").ToString)
-        callMinute = "00"
-        Select Case Trim(ConfigurationSettings.AppSettings("CallHour").ToString)
-            Case "08"
-                If Trim(ConfigurationSettings.AppSettings("CallMinute").ToString) = "30" Then
-                    cmbCallTime.SelectedText = "8:30 am"
-                Else
-                    cmbCallTime.SelectedText = "8 am"
-                End If
-            Case "09"
-                cmbCallTime.SelectedText = "9 am"
-            Case "10"
-                cmbCallTime.SelectedText = "10 am"
-            Case "11"
-                cmbCallTime.SelectedText = "11 am"
-            Case "12"
-                cmbCallTime.SelectedText = "12 pm"
-            Case "14"
-                cmbCallTime.SelectedText = "2 pm"
-            Case "16"
-                cmbCallTime.SelectedText = "4 pm"
-            Case "17"
-                If Trim(ConfigurationSettings.AppSettings("CallMinute").ToString) = "30" Then
-                    cmbCallTime.SelectedText = "5:30 pm"
-                Else
-                    cmbCallTime.SelectedText = "5 pm"
-                End If
-        End Select
-        If Trim(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal").ToString) <> "" Then
+        txtCustID.Text = Trim(ConfigurationManager.AppSettings("CustId").ToString)
+        txtDaysPrior.Text = Trim(ConfigurationManager.AppSettings("DaysPrior").ToString)
+        txtScheduledDaysPrior.Text = Trim(ConfigurationManager.AppSettings("ScheduledDaysPrior").ToString)
+        '  callMinute = "00"
+        'Select Case Trim(ConfigurationManager.AppSettings("CallHour").ToString)
+        '    Case "08"
+        '        If Trim(ConfigurationManager.AppSettings("CallMinute").ToString) = "30" Then
+        '            cmbCallTime.SelectedText = "8:30 am"
+        '        Else
+        '            cmbCallTime.SelectedText = "8 am"
+        '        End If
+        '    Case "09"
+        '        cmbCallTime.SelectedText = "9 am"
+        '    Case "10"
+        '        cmbCallTime.SelectedText = "10 am"
+        '    Case "11"
+        '        cmbCallTime.SelectedText = "11 am"
+        '    Case "12"
+        '        cmbCallTime.SelectedText = "12 pm"
+        '    Case "14"
+        '        cmbCallTime.SelectedText = "2 pm"
+        '    Case "16"
+        '        cmbCallTime.SelectedText = "4 pm"
+        '    Case "17"
+        '        If Trim(ConfigurationManager.AppSettings("CallMinute").ToString) = "30" Then
+        '            cmbCallTime.SelectedText = "5:30 pm"
+        '        Else
+        '            cmbCallTime.SelectedText = "5 pm"
+        '        End If
+        'End Select
+        If Trim(ConfigurationManager.AppSettings("MeetingSkipTypeTotal").ToString) <> "" Then
             BuildSkipTypeListBox()
         Else
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "The config file must have an accurate value for MeetingSkipTypeTotal."
         End If
-        If Trim(ConfigurationSettings.AppSettings("EngineProviderTotal").ToString) <> "" Then
+        If Trim(ConfigurationManager.AppSettings("EngineProviderTotal").ToString) <> "" Then
             BuildProviderListBox()
         Else
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "The config file must have an accurate value for EngineProviderTotal."
         End If
-        txtAreaCode.Text = Trim(ConfigurationSettings.AppSettings("DefaultAreaCode").ToString).ToUpper
-        lblCSVFile.Text = Trim(ConfigurationSettings.AppSettings("CSVFile").ToString).ToUpper
-        Me.lblInsightReport.Text = Trim(ConfigurationSettings.AppSettings("ReportFile").ToString).ToUpper
-        If Trim(ConfigurationSettings.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
+        txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
+        lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("CSVFile").ToString).ToUpper
+        Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString).ToUpper
+        If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
             lblCallLogic.Text = "Only home phone numbers ending in OK will be called"
-        ElseIf Trim(ConfigurationSettings.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
+        ElseIf Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
             lblCallLogic.Text = "Home phone numbers may be called unless they contain the letters 'PR'"
         Else
             lblCallLogic.ForeColor = System.Drawing.Color.Red
@@ -588,14 +562,14 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub BuildSkipTypeListBox()
         Dim y As Integer
-        Dim typeArray(CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
+        Dim typeArray(CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
         Dim meeting As String
         y = 0
         Try
-            Do Until y = CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer)
+            Do Until y = CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)
                 meeting = "MeetingSkipType" & (y + 1)
-                If Trim(ConfigurationSettings.AppSettings(meeting).ToString) <> "" Then
-                    typeArray(y) = Trim(ConfigurationSettings.AppSettings(meeting).ToString)
+                If Trim(ConfigurationManager.AppSettings(meeting).ToString) <> "" Then
+                    typeArray(y) = Trim(ConfigurationManager.AppSettings(meeting).ToString)
                 Else
                     typeArray(y) = ""
                 End If
@@ -606,7 +580,7 @@ Public Class HMM_IVR_Console
             Dim count As Integer
             x = 0
             count = 0
-            Do Until x = CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer)
+            Do Until x = CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)
                 If typeArray(x).ToString() <> "" Then
                     ListBox1.Items.Add(typeArray(x))
                 End If
@@ -619,14 +593,14 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub BuildProviderListBox()
         Dim y As Integer
-        Dim providerArray(CType(ConfigurationSettings.AppSettings("EngineProviderTotal"), Integer)) As String
+        Dim providerArray(CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)) As String
         Dim provider As String
         y = 0
         Try
-            Do Until y = CType(ConfigurationSettings.AppSettings("EngineProviderTotal"), Integer)
+            Do Until y = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
                 provider = "EngineProvider" & (y + 1)
-                If Trim(ConfigurationSettings.AppSettings(provider).ToString) <> "" Then
-                    providerArray(y) = Trim(ConfigurationSettings.AppSettings(provider).ToString) & " = " & ConfigurationSettings.AppSettings("Engine").ToString & " Provider ID " & (y + 1)
+                If Trim(ConfigurationManager.AppSettings(provider).ToString) <> "" Then
+                    providerArray(y) = Trim(ConfigurationManager.AppSettings(provider).ToString) & " = " & ConfigurationManager.AppSettings("Engine").ToString & " Provider ID " & (y + 1)
                 Else
                     providerArray(y) = ""
                 End If
@@ -637,7 +611,7 @@ Public Class HMM_IVR_Console
             Dim count As Integer
             x = 0
             count = 0
-            Do Until x = CType(ConfigurationSettings.AppSettings("EngineProviderTotal"), Integer)
+            Do Until x = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
                 If providerArray(x).ToString() <> "" Then
                     ListBox2.Items.Add("Report Provider ID " & providerArray(x))
                 End If
@@ -665,11 +639,11 @@ Public Class HMM_IVR_Console
         xDoc.Save(FName)
     End Sub
     Private Sub FTP()
-        Dim localFile As String = ConfigurationSettings.AppSettings("CallListFile").ToString
-        Dim localPath As String = ConfigurationSettings.AppSettings("DataFolderPath").ToString
-        Dim host As String = ConfigurationSettings.AppSettings("Server").ToString
-        Dim username As String = ConfigurationSettings.AppSettings("Username").ToString
-        Dim password As String = ConfigurationSettings.AppSettings("Password").ToString
+        Dim localFile As String = ConfigurationManager.AppSettings("CallListFile").ToString
+        Dim localPath As String = ConfigurationManager.AppSettings("DataFolderPath").ToString
+        Dim host As String = ConfigurationManager.AppSettings("Server").ToString
+        Dim username As String = ConfigurationManager.AppSettings("Username").ToString
+        Dim password As String = ConfigurationManager.AppSettings("Password").ToString
         Dim URI As String
         Dim ftp As System.Net.FtpWebRequest
         Dim export As New DataExport
@@ -681,7 +655,7 @@ Public Class HMM_IVR_Console
             datetimestampFile(0) = datetimestampFile(0) & "_" & datetimestamp
             datetimestampFile(0) = datetimestampFile(0) & ".txt"
 
-            localPath = localPath & "CallList_" & ConfigurationSettings.AppSettings("CustID").ToString & "_" & datetimestamp & ".txt"
+            localPath = localPath & "CallList_" & ConfigurationManager.AppSettings("CustID").ToString & "_" & datetimestamp & ".txt"
 
             File.Move(localFile, localPath)
             URI = host & "/CallList_" & datetimestamp & ".txt"
@@ -708,7 +682,7 @@ Public Class HMM_IVR_Console
             clsStream.Dispose()
 
             'Archive
-            File.Move(localPath, ConfigurationSettings.AppSettings("OutputArchive") & "CallList_" & datetimestamp & ".txt")
+            File.Move(localPath, ConfigurationManager.AppSettings("OutputArchive") & "CallList_" & datetimestamp & ".txt")
 
         Catch ex As Exception
             Throw ex
@@ -720,13 +694,13 @@ Public Class HMM_IVR_Console
         Try
             Dim cursor As System.Windows.Forms.Cursor
             cursor.Current = System.Windows.Forms.Cursors.WaitCursor
-            _ftp.Connect(ConfigurationSettings.AppSettings("Server").ToString, _
-                                ConfigurationSettings.AppSettings("Port").ToString)
-            _ftp.Login(ConfigurationSettings.AppSettings("Username").ToString, _
-                                ConfigurationSettings.AppSettings("Password").ToString)
+            _ftp.Connect(ConfigurationManager.AppSettings("Server").ToString, _
+                                ConfigurationManager.AppSettings("Port").ToString)
+            _ftp.Login(ConfigurationManager.AppSettings("Username").ToString, _
+                                ConfigurationManager.AppSettings("Password").ToString)
             _ftp.SetTransferType(_ftp.TransferType.Ascii)
-            _ftp.PutFile(ConfigurationSettings.AppSettings("CallListFile").ToString, _
-                                ConfigurationSettings.AppSettings("RemotePath").ToString)
+            _ftp.PutFile(ConfigurationManager.AppSettings("CallListFile").ToString, _
+                                ConfigurationManager.AppSettings("RemotePath").ToString)
             _ftp.Disconnect()
             _ftp = Nothing
             cursor = Nothing
@@ -784,33 +758,33 @@ Public Class HMM_IVR_Console
         ReplaceConfigSettings(configPath, "ScheduledDaysPrior", txtScheduledDaysPrior.Text)
         ReplaceConfigSettings(configPath, "DefaultAreaCode", txtAreaCode.Text)
         'Convert the earliest call time
-        callMinute = "00"
-        Select Case cmbCallTime.Text
-            Case "8 am"
-                callHour = "08"
-            Case "8:30 am"
-                callHour = "08"
-                callMinute = "30"
-            Case "9 am"
-                callHour = "09"
-            Case "10 am"
-                callHour = "10"
-            Case "11 am"
-                callHour = "11"
-            Case "12 pm"
-                callHour = "12"
-            Case "2 pm"
-                callHour = "14"
-            Case "4 pm"
-                callHour = "16"
-            Case "5 pm"
-                callHour = "17"
-            Case "5:30 pm"
-                callHour = "17"
-                callMinute = "30"
-        End Select
-        ReplaceConfigSettings(configPath, "CallHour", callHour)
-        ReplaceConfigSettings(configPath, "CallMinute", callMinute)
+        '    callMinute = "00"
+        'Select Case cmbCallTime.Text
+        '    Case "8 am"
+        '        callHour = "08"
+        '    Case "8:30 am"
+        '        callHour = "08"
+        '        callMinute = "30"
+        '    Case "9 am"
+        '        callHour = "09"
+        '    Case "10 am"
+        '        callHour = "10"
+        '    Case "11 am"
+        '        callHour = "11"
+        '    Case "12 pm"
+        '        callHour = "12"
+        '    Case "2 pm"
+        '        callHour = "14"
+        '    Case "4 pm"
+        '        callHour = "16"
+        '    Case "5 pm"
+        '        callHour = "17"
+        '    Case "5:30 pm"
+        '        callHour = "17"
+        '        callMinute = "30"
+        'End Select
+        'ReplaceConfigSettings(configPath, "CallHour", callHour)
+        'ReplaceConfigSettings(configPath, "CallMinute", callMinute)
         ReplaceConfigSettings(configPath, "UseCSV", chkUseCSV.Checked)
         ReplaceConfigSettings(configPath, "CSVFile", lblCSVFile.Text)
         ReplaceConfigSettings(configPath, "ReportFile", Me.lblInsightReport.Text)
@@ -835,9 +809,9 @@ Public Class HMM_IVR_Console
         Try
             Dim line As String
             Dim writtenCounter As Integer
-            If File.Exists(ConfigurationSettings.AppSettings("CallListFile")) Then
+            If File.Exists(ConfigurationManager.AppSettings("CallListFile")) Then
                 'Count the number of lines in the Call List file
-                reportReader = New StreamReader(ConfigurationSettings.AppSettings("CallListFile"))
+                reportReader = New StreamReader(ConfigurationManager.AppSettings("CallListFile"))
                 line = reportReader.ReadLine
                 Do While Not line Is Nothing
                     If line.Length > 0 Then
@@ -862,9 +836,9 @@ Public Class HMM_IVR_Console
     Private Function NumberOfExceptionedRows() As Integer
         Dim line As String
         Dim writtenCounter As Integer
-        If File.Exists(ConfigurationSettings.AppSettings("ExceptionFile")) Then
+        If File.Exists(ConfigurationManager.AppSettings("ExceptionFile")) Then
             'Count the number of lines in the Call List file
-            Dim reportReader As New StreamReader(ConfigurationSettings.AppSettings("ExceptionFile"))
+            Dim reportReader As New StreamReader(ConfigurationManager.AppSettings("ExceptionFile"))
             line = reportReader.ReadLine
             Do While Not line Is Nothing
                 If line.Length > 0 Then
@@ -880,17 +854,17 @@ Public Class HMM_IVR_Console
 
     Private Sub LaunchExceptionReportAndCallList()
         If Me.NumberOfCallsWritten > 0 Then
-            Shell("notepad " & ConfigurationSettings.AppSettings("CallListFile").ToString(), AppWinStyle.NormalFocus)
+            Shell("notepad " & ConfigurationManager.AppSettings("CallListFile").ToString(), AppWinStyle.NormalFocus)
         End If
         If Me.NumberOfExceptionedRows > 0 Then
-            Shell("notepad " & ConfigurationSettings.AppSettings("ExceptionFile").ToString(), AppWinStyle.NormalFocus)
+            Shell("notepad " & ConfigurationManager.AppSettings("ExceptionFile").ToString(), AppWinStyle.NormalFocus)
         End If
     End Sub
 
     Private Sub btnAddNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddNew.Click
         Dim max As Integer
         'Determine how many items can be added according to the config file
-        max = CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer)
+        max = CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)
         If ListBox1.Items.Count < max Then
             If Trim(txtNewType.Text) <> "" Then
                 ListBox1.Items.Add(txtNewType.Text.ToUpper)
@@ -938,9 +912,9 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
-        Dim meetingTypeArray(CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
+        Dim meetingTypeArray(CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
         Dim x As Integer
-        Dim cursor As System.Windows.Forms.Cursor
+        'Dim cursor As System.Windows.Forms.Cursor
         Dim useCSV As Boolean
         Dim scheduledDaysPrior As Integer
 
@@ -954,12 +928,12 @@ Public Class HMM_IVR_Console
             lblMsg.Text = "Customer ID is missing."
             Exit Sub
         End If
-        'The earliest time to call must not be blank
-        If Trim(cmbCallTime.Text) = "" Then
-            lblMsg.ForeColor = System.Drawing.Color.Red
-            lblMsg.Text = "The earliest time to call must be specified."
-            Exit Sub
-        End If
+        ''The earliest time to call must not be blank
+        'If Trim(cmbCallTime.Text) = "" Then
+        '    lblMsg.ForeColor = System.Drawing.Color.Red
+        '    lblMsg.Text = "The earliest time to call must be specified."
+        '    Exit Sub
+        'End If
         'If the Use CSV option is selected, a file must be chosen
         If chkUseCSV.Checked Then
             If Trim(lblCSVFile.Text) = "" Then
@@ -1001,7 +975,7 @@ Public Class HMM_IVR_Console
             x += 1
         Loop
 
-        lblMsg.Text = export.Main(Trim(txtCustID.Text), Convert.ToInt32(Trim(txtDaysPrior.Text)), Trim(txtScheduledDaysPrior.Text), callHour, callMinute, meetingTypeArray, useCSV, lblCSVFile.Text, lblInsightReport.Text)
+        lblMsg.Text = export.Main(Trim(txtCustID.Text), Convert.ToInt32(Trim(txtDaysPrior.Text)), Trim(txtScheduledDaysPrior.Text), meetingTypeArray, useCSV, lblCSVFile.Text, lblInsightReport.Text)
 
         If lblMsg.Text.EndsWith("-") Then
             lblMsg.ForeColor = System.Drawing.Color.Black

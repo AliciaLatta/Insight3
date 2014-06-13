@@ -61,21 +61,21 @@ Public Class DataExport
     'Property of Archipelago Systems, LLC.
     '=================================================================================================
     Public Function Main(ByVal custID As String, ByVal daysPrior As Integer, ByVal scheduledDaysPrior As String, _
-            ByVal callHour As String, ByVal callMinute As String, ByVal meetingTypeArray() As String, _
+            ByVal meetingTypeArray() As String, _
             ByVal useCSV As Boolean, ByVal CSVFile As String, ByVal ReportFilePath As String) As String
 
         Dim callListFilePath, exceptionFilePath As String 'Strings to store filenames
 
         Try
             'Get current settings from the configuration file
-            callListFilePath = ConfigurationSettings.AppSettings("CallListFile").ToString
-            exceptionFilePath = ConfigurationSettings.AppSettings("ExceptionFile").ToString
+            callListFilePath = ConfigurationManager.AppSettings("CallListFile").ToString
+            exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString
         Catch e As Exception
             'Problem with the config file
             UpdateResults("There was a problem with the configuration file: " & e.ToString)
             Return results
         End Try
-        ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, callHour, callMinute, meetingTypeArray, useCSV, CSVFile)
+        ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, meetingTypeArray, useCSV, CSVFile)
         Return results
     End Function
     '=================================================================================================
@@ -87,8 +87,8 @@ Public Class DataExport
         Dim callListFilePath As String
         Dim outputArchivePath As String
         Try
-            callListFilePath = ConfigurationSettings.AppSettings("CallListFile").ToString
-            outputArchivePath = ConfigurationSettings.AppSettings("OutputArchive").ToString
+            callListFilePath = ConfigurationManager.AppSettings("CallListFile").ToString
+            outputArchivePath = ConfigurationManager.AppSettings("OutputArchive").ToString
         Catch ex As Exception
             Return False
         End Try
@@ -162,7 +162,6 @@ Public Class DataExport
     Private Sub ProcessTransactions(ByVal reportFilePath As String, ByVal callListFilePath As String, _
                                      ByVal exceptionFilePath As String, ByVal custID As String, _
                                      ByVal daysPrior As Integer, ByVal scheduledDaysPrior As String, _
-                                     ByVal callHour As String, ByVal callMinute As String, _
                                      ByVal meetingTypeArray() As String, ByVal useProviderCSV As Boolean, _
                                      ByVal CSVProviderFilePath As String)
 
@@ -245,7 +244,6 @@ Public Class DataExport
                         Select Case ProcessRow(row, callListFilePath, _
                            exceptionFilePath, custID, _
                            daysPrior, scheduledDaysPrior, _
-                           callHour, callMinute, _
                            meetingTypeArray, useProviderCSV, _
                            CSVProviderFilePath, rowCounter)
                             Case ProcessingStatus.SuccessfulRow
@@ -264,6 +262,9 @@ Public Class DataExport
                                     Exit Sub
                                 ElseIf ProcessError = problemReadingReportXLS Then
                                     UpdateResults(problemReadingReportXLS)
+                                    Exit Sub
+                                ElseIf ProcessError = providerIDNotFoundConfig Then
+                                    UpdateResults(providerIDNotFoundConfig)
                                     Exit Sub
                                 End If
                                 exceptionWriter.WriteLine("")
@@ -300,7 +301,7 @@ Public Class DataExport
                             Try
                                 If Trim(recordsSplitout(0)) = Trim(splitout(0)) And Trim(recordsSplitout(4)) = Trim(splitout(4)) Then
                                     exists = True
-                                    If Convert.ToDateTime(Trim(recordsSplitout(2))) > Convert.ToDateTime(Trim(splitout(2))) Then
+                                    If Convert.ToDateTime(Trim(recordsSplitout(3))) > Convert.ToDateTime(Trim(splitout(3))) Then
                                         'Replace the existing record with this one because the appt time is earlier
                                         records.RemoveAt(y)
                                         replace = True
@@ -376,15 +377,16 @@ Public Class DataExport
                 UpdateResults("Input File: " & reportFilePath & " does not exist.")
             End If
         Catch ex As Exception
-            CloseReaders()
             UpdateResults(_error & ": " & ex.Message)
+        Finally
+            CloseReaders()
+            If Not exceptionWriter Is Nothing Then exceptionWriter.Close()
         End Try
     End Sub
 
     Private Function ProcessRow(ByVal row As DataRow, ByVal callListFilePath As String, _
                                      ByVal exceptionFilePath As String, ByVal custID As String, _
                                      ByVal daysPrior As Integer, ByVal scheduledDaysPrior As String, _
-                                     ByVal callHour As String, ByVal callMinute As String, _
                                      ByVal meetingTypeArray() As String, ByVal useProviderCSV As Boolean, _
                                      ByVal CSVProviderFilePath As String, ByVal rowCounter As Integer) As ProcessingStatus
 
@@ -450,14 +452,18 @@ Public Class DataExport
     End Function
 
     Public Class Phone
-        Public Property ID As Integer
         Public Property Type As String
         Public Property Number As String
+        Public Property Status As String
+        Public Property SMS As Boolean
         Public Sub New()
+            Me.Status = "UNKNOWN"
         End Sub
-        Public Sub New(ByVal Type As String, ByVal Number As String)
+        Public Sub New(ByVal Type As String, ByVal Number As String, ByVal Status As String)
             Me.Type = Type
             Me.Number = Number
+            Me.Status = Status
+            Me.SMS = SMS
         End Sub
     End Class
 
@@ -466,78 +472,119 @@ Public Class DataExport
     'Description:	Takes all spaces out the phone and adds area code if relevant
     'Property of Archipelago Systems, LLC.
     '=================================================================================================
-    Private Function GetPhone(ByVal name As String, ByRef phones As List(Of Phone), ByVal text As Boolean) As Phone
+    Private Function GetPhone(ByVal name As String, ByRef phones As List(Of Phone), ByVal sms As Boolean) As Phone
         Dim x As Integer
         Dim cur As String
-        Dim mobileStatus As String = String.Empty
-        Dim homeStatus As String = String.Empty
-        Dim workStatus As String = String.Empty
         Dim strNewPhone As String = String.Empty
 
+        'Clean up the data and set the status
         For Each phone As Phone In phones
-            Do Until x = phone.Number.Length
-                cur = phone.Number.Chars(x)
-                Select Case cur
-                    Case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
-                        'If this is the first time in the loop, take the zero out
-                        If x = 0 Then
-                            strNewPhone = ""
-                        End If
-                        'The character is a number so add it to the new string
-                        strNewPhone += cur
-                End Select
-                x += 1
-            Loop
-            phone.Number = strNewPhone
+            With phone
+                Do Until x = phone.Number.Length
+                    cur = phone.Number.Chars(x)
+                    Select Case cur
+                        Case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"
+                            'If this is the first time in the loop, take the zero out
+                            If x = 0 Then
+                                strNewPhone = ""
+                            End If
+                            'The character is a number so add it to the new string
+                            strNewPhone += cur
+                    End Select
+                    x += 1
+                Loop
+                If strNewPhone.Length = 10 Then
+                    .Status = "OK"
+                    .Number = strNewPhone
+                End If
+                If strNewPhone.Length = 7 Then
+                    .Number = ConfigurationManager.AppSettings("DefaultAreaCode").ToString & .Number
+                    .Status = "OK"
+                    .Number = strNewPhone
+                End If
+                strNewPhone = String.Empty
+                x = 0
+            End With
         Next
 
-        For Each phone As Phone In phones
-            If phone.Number.Length <> 10 Then
-                If phone.Number.Length = 7 Then phone.Number = ConfigurationManager.AppSettings("DefaultAreaCode").ToString & phone.Number
-            End If
-        Next
-
-        If text Then
+        'Get out cleanly if we can
+        If sms Then
             For Each phone As Phone In phones
-                If phone.Type = "MOBILE" Then
-                    If phone.Number.Length = 10 Then
-                        mobileStatus = "OK"
-                        Exit For
-                    Else 'Mobile exists but is invalid
-                        exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is invalid:" & phone.Number)
-                        phone.Number = String.Empty 'Left here ********************************************************
-                        mobileStatus = "INVALID"
-                        Exit For
+                With phone
+                    If .Type = "MOBILE" And .Status.StartsWith("OK") Then
+                        .SMS = True
+                        Return phone 'All good for text
                     End If
-                End If
+                End With
             Next
-            If mobileStatus = String.Empty Then
-                exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is not provided.")
-            End If
-        Else 'Not text
+        Else
             For Each phone As Phone In phones
-                If phone.Type = "HOME" Then
-                    If phone.Number.Length <> 10 Then homeStatus = "INVALID" Else  : homeStatus = "OK"
-                End If
-                If phone.Type = "WORK" Then
-                    If phone.Number.Length <> 10 Then workStatus = "INVALID" Else  : workStatus = "OK"
-                End If
+                With phone
+                    If .Type = "HOME" And .Status.StartsWith("OK") Then Return phone 'All good for home
+                End With
             Next
         End If
+
+        'If we get here, there is an issue with the first choice of home or mobile
+        If sms Then
+            Dim invalid As Boolean
+            For Each phone As Phone In phones
+                With phone
+                    If .Type = "MOBILE" Then
+                        exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is invalid:" & .Number)
+                        invalid = True
+                    End If
+                End With
+            Next
+            If Not invalid Then
+                exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is missing.")
+            End If
+        Else
+            Dim invalid As Boolean
+            For Each phone As Phone In phones
+                With phone
+                    If .Type = "HOME" Then
+                        exceptionWriter.WriteLine("Not able to call home number for " & name & " as home number is invalid:" & .Number)
+                        invalid = True
+                    End If
+                End With
+            Next
+            If Not invalid Then
+                exceptionWriter.WriteLine("Not able to call home of " & name & " as home number is missing.")
+            End If
+        End If
+
+        'Text already returned if valid.
+        'Return home, mobile, work
+
         For Each phone As Phone In phones
-            If text And mobileStatus = "OK" And phone.Type = "MOBILE" Then Return phone 'Text to Mobile - Plan A
-            If Not text And homeStatus = "OK" And phone.Type = "HOME" Then Return phone 'Voice to Home - Plan A
+            With phone
+                .SMS = False
+                If .Type.StartsWith("HOME") Then Return phone
+            End With
         Next
-        'If we get down here, we need to check for alternatives
+
         For Each phone As Phone In phones
-            If homeStatus = "OK" And phone.Type = "HOME" Then Return phone 'Send to home number - Plan B
+            With phone
+                .SMS = False
+                If .Type.StartsWith("MOBILE") Then Return phone
+            End With
         Next
+
         For Each phone As Phone In phones
-            If workStatus = "OK" And phone.Type = "WORK" Then Return phone 'Send to work number - Plan C
+            With phone
+                .SMS = False
+                If .Type.StartsWith("WORK") Then Return phone
+            End With
         Next
+
+        'exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is invalid:" & phone.Number)
+
+
+        'To Do -- Loop through numbers and write out exception messages for text if selected , home if text and mobile is missing or invalid, and home if voice 
         Return Nothing
     End Function
-   
+
     '=================================================================================================
     'Method Name:	DataExport.WriteAllButRecord
     'Description:	Writes a record in the 'AllBut' logic
@@ -587,8 +634,7 @@ Public Class DataExport
             If sms = 1 And spanishIndicator Then sms = 3 'Spanish text
 
             If Not phone Is Nothing Then
-                If phone.Type <> "MOBILE" Then sms = 0 'Missing or invalid mobile number
-
+                If Not phone.SMS Then sms = 0 'Missing or invalid mobile number
                 If Not providerID Is Nothing Then
                     If providerID.Length <> 0 Then
                         If Left(providerID, 14).ToUpper <> "ENGINEPROVIDER" Then
@@ -619,11 +665,11 @@ Public Class DataExport
         'Get the meeting type: If the type is listed in the config file as a type to skip, don't print the line
         Dim y = 0
         Dim skipMeeting As Boolean
-        Do Until y = (CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer) + 1)
+        Do Until y = (CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer) + 1)
             If Trim(meetingTypeArray(y)) <> "" Then
                 If meetingTypeArray(y).ToUpper = meetingType.ToUpper Then
                     skipMeeting = True
-                    y = (CType(ConfigurationSettings.AppSettings("MeetingSkipTypeTotal"), Integer))
+                    y = (CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer))
                 End If
             End If
             y += 1

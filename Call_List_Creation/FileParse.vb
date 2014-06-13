@@ -61,6 +61,6 @@ Public Class FileParse
 #End Region
 
     Private Sub FileParse_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        webBrowser.Navigate(ConfigurationSettings.AppSettings("ParseURL").ToString)
+        webBrowser.Navigate(ConfigurationManager.AppSettings("ParseURL").ToString)
     End Sub
 End Class

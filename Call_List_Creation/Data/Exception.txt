@@ -1,7 +1,19 @@
 ****************************************************************************************************
-* Run Date: Tuesday, June 10, 2014 3:57 PM
+* Run Date: Friday, June 13, 2014 1:37 PM
 ****************************************************************************************************
 
-Not able to send text to JONATHAN CORDOVA as mobile number is not provided.
+Not able to send text to THOMAS KNOPF as mobile number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of TYLER JOHNSON as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
+Not able to call home of  BLOCK OUT as home number is missing.
 
-Rows Written: 31
+Rows Written: 73
