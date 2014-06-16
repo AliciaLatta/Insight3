@@ -42,6 +42,7 @@ Public Class DataExport
     Private Const ProgramError As String = "There was a problem with the program.  Please try again.  If the problem persists, close then reopen the application."
     Private Const OpenReportFile As String = "The Insight report is open.  Please close it and try again."
     Private Const providerIDNotFoundCSV As String = "A provider id/meeting type combination matching a combination in the Insight OPEN report was not found in the CSV file.  Please review the CSV and Insight report files to be sure all provider ids are accurate."
+    Private Const locIDNotFoundCSV As String = "A location id/meeting type combination matching a combination in the Insight OPEN report was not found in the CSV file.  Please review the CSV and Insight report files to be sure all provider ids are accurate."
     Private Const providerIDNotFoundConfig As String = "A provider id/meeting type combination matching a combination in the Insight OPEN report was not found in the config file.  Please review the config file and Insight report files to be sure all provider ids are accurate."
     Private Const problemReadingProviderXLS As String = "There is a problem with the columns in the Provider List CSV file.  Please check that they all exist."
     Private Const problemReadingReportXLS As String = "There is a problem with the columns in the Insight Report tab delimited file.  Please check that they all exist."
@@ -251,23 +252,28 @@ Public Class DataExport
                             Case ProcessingStatus.SkippedRow
                                 skipCounter += 1
                             Case ProcessingStatus.ErroredRow
-                                If ProcessError = invalidCallTime Then
-                                    UpdateResults(invalidCallTime)
-                                    Exit Sub
-                                ElseIf ProcessError = xlsReportProblem Then
-                                    UpdateResults(xlsReportProblem)
-                                    Exit Sub
-                                ElseIf ProcessError = providerIDNotFoundCSV Then
-                                    UpdateResults(providerIDNotFoundCSV)
-                                    Exit Sub
-                                ElseIf ProcessError = problemReadingReportXLS Then
-                                    UpdateResults(problemReadingReportXLS)
-                                    Exit Sub
-                                ElseIf ProcessError = providerIDNotFoundConfig Then
-                                    UpdateResults(providerIDNotFoundConfig)
-                                    Exit Sub
-                                End If
-                                exceptionWriter.WriteLine("")
+                                UpdateResults(ProcessError)
+                                Exit Sub
+                                'If ProcessError = invalidCallTime Then
+                                '    UpdateResults(invalidCallTime)
+                                '    Exit Sub
+                                'ElseIf ProcessError = xlsReportProblem Then
+                                '    UpdateResults(xlsReportProblem)
+                                '    Exit Sub
+                                'ElseIf ProcessError = providerIDNotFoundCSV Then
+                                '    UpdateResults(providerIDNotFoundCSV)
+                                '    Exit Sub
+                                'ElseIf ProcessError = locIDNotFoundCSV Then
+                                '    UpdateResults(locIDNotFoundCSV)
+                                '    Exit Sub
+                                'ElseIf ProcessError = problemReadingReportXLS Then
+                                '    UpdateResults(problemReadingReportXLS)
+                                '    Exit Sub
+                                'ElseIf ProcessError = providerIDNotFoundConfig Then
+                                '    UpdateResults(providerIDNotFoundConfig)
+                                '    Exit Sub
+                                'End If
+                                'exceptionWriter.WriteLine("")
                             Case ProcessingStatus.WrittenRow
                         End Select
                     End If
@@ -801,6 +807,10 @@ Public Class DataExport
                 End Try
                 If IVRProviderID = Nothing Then
                     _error = providerIDNotFoundCSV
+                    Return False
+                End If
+                If locID = Nothing Then
+                    _error = locIDNotFoundCSV
                     Return False
                 End If
             End If
