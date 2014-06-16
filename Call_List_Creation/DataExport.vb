@@ -410,10 +410,10 @@ Public Class DataExport
         callDate = Convert.ToDateTime(apptDate).AddDays(-Convert.ToInt32(daysPrior))
         gCallDate = callDate.ToString("yyyyMMdd")
 
-        'If callDate < Today Then
-        '    _error = invalidCallTime
-        '    Return ProcessingStatus.ErroredRow
-        'End If
+        If callDate < Today Then
+            _error = invalidCallTime
+            Return ProcessingStatus.ErroredRow
+        End If
 
         If rowCounter = 2 Then
             outputWriter.WriteLine("Phone,LocationID,DocID,ApptDateTime,SpecialMessage,PatientName,SMS,Extra")
