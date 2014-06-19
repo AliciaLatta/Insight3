@@ -55,6 +55,7 @@ Public Class DataExport
     Shared locID As Integer = 1
     Private _error As String 'Member level variable used to hold the error message
     Dim gCallDate As String
+    Shared callDate As Date
 #End Region
     '=================================================================================================
     'Method Name:	DataExport.Main
@@ -77,6 +78,7 @@ Public Class DataExport
             Return results
         End Try
         ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, meetingTypeArray, useCSV, CSVFile)
+        CloseReaders()
         Return results
     End Function
     '=================================================================================================
@@ -175,6 +177,7 @@ Public Class DataExport
         Dim y As Integer
         Dim exists As Boolean
         Dim xlsReader As StreamReader
+        '   Dim xReader As 
         Dim dt As DataTable
         callListFilePath2 = callListFilePath
         Try
@@ -220,9 +223,10 @@ Public Class DataExport
                     xlsReader = New StreamReader(reportFilePath)
 
                     dt = BuildDataTable(xlsReader)
+
                 Catch e As Exception
                     UpdateResults(OpenReportFile & ": " & e.Message)
-                    If Not xlsReader Is Nothing Then
+                    If xlsReader IsNot Nothing Then
                         xlsReader.Close()
                         xlsReader = Nothing
                     End If
@@ -254,34 +258,14 @@ Public Class DataExport
                             Case ProcessingStatus.ErroredRow
                                 UpdateResults(ProcessError)
                                 Exit Sub
-                                'If ProcessError = invalidCallTime Then
-                                '    UpdateResults(invalidCallTime)
-                                '    Exit Sub
-                                'ElseIf ProcessError = xlsReportProblem Then
-                                '    UpdateResults(xlsReportProblem)
-                                '    Exit Sub
-                                'ElseIf ProcessError = providerIDNotFoundCSV Then
-                                '    UpdateResults(providerIDNotFoundCSV)
-                                '    Exit Sub
-                                'ElseIf ProcessError = locIDNotFoundCSV Then
-                                '    UpdateResults(locIDNotFoundCSV)
-                                '    Exit Sub
-                                'ElseIf ProcessError = problemReadingReportXLS Then
-                                '    UpdateResults(problemReadingReportXLS)
-                                '    Exit Sub
-                                'ElseIf ProcessError = providerIDNotFoundConfig Then
-                                '    UpdateResults(providerIDNotFoundConfig)
-                                '    Exit Sub
-                                'End If
-                                'exceptionWriter.WriteLine("")
                             Case ProcessingStatus.WrittenRow
                         End Select
                     End If
                 Next
 
                 outputWriter.Close()
-                outputWriter = Nothing
-                CallListFile = Nothing
+                If Not outputReader Is Nothing Then outputReader.Dispose()
+
                 'Count the number of lines in the output file
                 outputReader = New StreamReader(callListFilePath)
                 'Add the header lines to the records array
@@ -291,7 +275,7 @@ Public Class DataExport
                 records.Add(outputReader.ReadLine)
                 records.Add(outputReader.ReadLine)
                 line = outputReader.ReadLine
-                Dim recordCount As Integer
+
                 Do While Not line Is Nothing
                     If line.Length > 0 Then
                         'Count the number records printed to the call list
@@ -315,21 +299,17 @@ Public Class DataExport
                                     End If
                                 End If
                             Catch ex As Exception
-
                                 'Handle argument out-of-range exception
                             End Try
-
                             y += 1
                         Loop
                         If Not exists Or replace Then
                             records.Add(line)
-                            recordCount += 1
                         Else
                             If replace = True Then
                                 records.Add(line)
                             End If
                         End If
-
                         exists = False
                         line = outputReader.ReadLine
                     End If
@@ -346,13 +326,14 @@ Public Class DataExport
                     Loop
                     outputWriter.WriteLine("*EOF*")
                     outputWriter.Close()
+                    If outputReader IsNot Nothing Then outputReader.Dispose()
                 Catch ex As Exception
                     UpdateResults(ProgramError & ": " & ex.Message)
                     Exit Sub
                 End Try
 
                 exceptionWriter.WriteLine("")
-                exceptionWriter.WriteLine("Rows Written: " & recordCount)
+                exceptionWriter.WriteLine("Rows Written: " & records.Count - 1)
                 exceptionWriter.Close()
                 exceptionWriter = Nothing
                 'Need to subtract the last line (*EOF*) from the count
@@ -361,7 +342,7 @@ Public Class DataExport
                 UpdateResultsFinal(vbCrLf & "Run Date: " & Date.Now.ToString("s"))
                 UpdateResultsFinal(vbCrLf & "Processing Complete" & vbCrLf)
                 'If the row count is less than 0, set it to 0
-                UpdateResultsFinal(vbCrLf & "Rows Written: " & recordCount & vbCrLf & vbCrLf)
+                UpdateResultsFinal(vbCrLf & "Rows Written: " & records.Count - 1 & vbCrLf & vbCrLf)
                 UpdateResultsFinal("Call list created in ")
                 'Rename file
                 Dim newName As String
@@ -386,6 +367,8 @@ Public Class DataExport
             UpdateResults(_error & ": " & ex.Message)
         Finally
             CloseReaders()
+            If Not outputWriter Is Nothing Then outputWriter.Close()
+            If Not outputReader Is Nothing Then outputReader.Dispose()
             If Not exceptionWriter Is Nothing Then exceptionWriter.Close()
         End Try
     End Sub
@@ -397,7 +380,7 @@ Public Class DataExport
                                      ByVal CSVProviderFilePath As String, ByVal rowCounter As Integer) As ProcessingStatus
 
         Dim InsightProviderID, IVRProviderID As String
-        Dim apptDate, callDate As Date
+        Dim apptDate As Date
 
         apptDate = Convert.ToDateTime(row(8).ToString.Trim)
 
@@ -407,15 +390,14 @@ Public Class DataExport
             apptDate = Convert.ToDateTime(apptDate & " " & row(10).ToString.Trim)
         End If
 
-        callDate = Convert.ToDateTime(apptDate).AddDays(-Convert.ToInt32(daysPrior))
-        gCallDate = callDate.ToString("yyyyMMdd")
-
-        If callDate < Today Then
-            _error = invalidCallTime
-            Return ProcessingStatus.ErroredRow
-        End If
-
         If rowCounter = 2 Then
+            callDate = Convert.ToDateTime(apptDate).AddDays(-Convert.ToInt32(daysPrior))
+            gCallDate = callDate.ToString("yyyyMMdd")
+
+            If callDate < Today Then
+                _error = invalidCallTime
+                Return ProcessingStatus.ErroredRow
+            End If
             outputWriter.WriteLine("Phone,LocationID,DocID,ApptDateTime,SpecialMessage,PatientName,SMS,Extra")
         End If
 
@@ -469,7 +451,7 @@ Public Class DataExport
             Me.Type = Type
             Me.Number = Number
             Me.Status = Status
-            Me.SMS = SMS
+            'Me.SMS = SMS
         End Sub
     End Class
 
@@ -482,7 +464,7 @@ Public Class DataExport
         Dim x As Integer
         Dim cur As String
         Dim strNewPhone As String = String.Empty
-
+        Dim retval As New Phone
         'Clean up the data and set the status
         For Each phone As Phone In phones
             With phone
@@ -513,84 +495,91 @@ Public Class DataExport
             End With
         Next
 
-        'Get out cleanly if we can
-        If sms Then
-            For Each phone As Phone In phones
-                With phone
-                    If .Type = "MOBILE" And .Status.StartsWith("OK") Then
-                        .SMS = True
-                        Return phone 'All good for text
-                    End If
-                End With
-            Next
-        Else
-            For Each phone As Phone In phones
-                With phone
-                    If .Type = "HOME" And .Status.StartsWith("OK") Then Return phone 'All good for home
-                End With
-            Next
-        End If
-
-        'If we get here, there is an issue with the first choice of home or mobile
-        If sms Then
-            Dim invalid As Boolean
-            For Each phone As Phone In phones
-                With phone
-                    If .Type = "MOBILE" Then
-                        exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is invalid:" & .Number)
-                        invalid = True
-                    End If
-                End With
-            Next
-            If Not invalid Then
-                exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is missing.")
-            End If
-        Else
-            Dim invalid As Boolean
-            For Each phone As Phone In phones
-                With phone
-                    If .Type = "HOME" Then
-                        exceptionWriter.WriteLine("Not able to call home number for " & name & " as home number is invalid:" & .Number)
-                        invalid = True
-                    End If
-                End With
-            Next
-            If Not invalid Then
-                exceptionWriter.WriteLine("Not able to call home of " & name & " as home number is missing.")
-            End If
-        End If
-
-        'Text already returned if valid.
-        'Return home, mobile, work
-
-        For Each phone As Phone In phones
-            With phone
-                .SMS = False
-                If .Type.StartsWith("HOME") Then Return phone
-            End With
-        Next
-
-        For Each phone As Phone In phones
-            With phone
-                .SMS = False
-                If .Type.StartsWith("MOBILE") Then Return phone
-            End With
-        Next
-
-        For Each phone As Phone In phones
-            With phone
-                .SMS = False
-                If .Type.StartsWith("WORK") Then Return phone
-            End With
-        Next
-
-        'exceptionWriter.WriteLine("Not able to send text to " & name & " as mobile number is invalid:" & phone.Number)
-
-
+        Dim msg As String = String.Empty
         'To Do -- Loop through numbers and write out exception messages for text if selected , home if text and mobile is missing or invalid, and home if voice 
-        Return Nothing
-    End Function
+        'If we get here, there is an issue with the first choice of home or mobile
 
+        For Each phone As Phone In phones
+            If sms Then
+                If phone.Type = "MOBILE" And phone.Status = "OK" Then
+                    Return phone
+                ElseIf sms And phone.Type = "HOME" And phone.Status = "OK" Then
+                    retval = phone
+                ElseIf sms AndAlso retval.Type <> "HOME" And phone.Status = "OK" Then
+                    retval = phone
+                End If
+            Else
+                If phone.Type = "HOME" And phone.Status = "OK" Then
+                    Return phone
+                ElseIf phone.Type = "MOBILE" And phone.Status = "OK" Then
+                    retval = phone
+                ElseIf retval.Type <> "MOBILE" Then
+                    retval = phone
+                End If
+            End If
+        Next
+         
+        If retval Is Nothing Then
+            msg = "NO CALL will be made to " & name & " as a valid number does not exist."
+            WriteException(msg)
+            Return retval
+        Else
+            Dim ok As Boolean = False
+            For Each phone As Phone In phones
+                With phone
+                    If .Status = "OK" Then
+                        ok = True
+                    End If
+                End With
+            Next
+            If Not ok Then
+                msg = "NO CALL will be made to " & name & " as a valid number does not exist."
+                WriteException(msg)
+                Return retval
+            End If
+        End If
+        Dim msg2 As String
+
+        If sms Then 'Want a text
+            msg2 = "Voice call will be made to " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & "(" & retval.Type & ") instead."
+            For Each phone As Phone In phones
+                With phone
+                    If .Type.StartsWith("MOBILE") Then
+                        msg = "UNABLE to TEXT " & name & " as mobile number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
+                        Return retval
+                    End If
+                End With
+            Next
+            'If we get here, mobile number doesn't exist
+            msg = "UNABLE to TEXT " & name & " as mobile number is missing.  " & msg2
+            WriteException(msg)
+            Return retval
+        Else 'They want to call home 
+            msg2 = "Will use " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & "(" & retval.Type & ") instead."
+            For Each phone As Phone In phones
+                With phone
+                    If .Type.StartsWith("HOME") Then
+                        msg = "UNABLE to CALL " & .Type & " of " & name & " as " & .Type & " number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
+                        WriteException(msg)
+                        Return retval
+                    End If
+                End With
+            Next
+            'If we get here, home number doesn't exist
+            msg = "UNABLE to CALL HOME of " & name & ";  " & msg2
+            WriteException(msg)
+            Return retval
+        End If
+        'Return retval
+    End Function
+    Private Sub WriteException(ByVal msg As String)
+        exceptionWriter.WriteLine(msg)
+        exceptionWriter.WriteLine("------------------------------------------------------------------------------------------------------------------------------")
+    End Sub
+    'Private Sub WriteException(ByVal message As String)
+    '    exceptionWriter.WriteLine(message)
+    '    exceptionWriter.WriteLine("-----------------------------------------------------------------------------------------------------------------------------")
+    'End Sub
     '=================================================================================================
     'Method Name:	DataExport.WriteAllButRecord
     'Description:	Writes a record in the 'AllBut' logic
@@ -602,7 +591,6 @@ Public Class DataExport
         Dim sms As Integer = 0
         Dim fullName As String
         Dim phone As Phone
-        ' Dim phone As String
         Dim type As String = PhoneType.Home
         Dim phoneList As New List(Of Phone)
 
@@ -634,33 +622,23 @@ Public Class DataExport
 
             phone = GetPhone(fullName, phoneList, (sms = 1))
 
-            spanishIndicator = row(20).ToString.Trim.ToUpper = "SP"
+            If phone.Status = "OK" And Not providerID Is Nothing And providerID.Length > 0 And Left(providerID, 14).ToUpper <> "ENGINEPROVIDER" And apptDate <> Nothing Then
+                spanishIndicator = row(21).ToString.ToUpper.Trim.StartsWith("SP")
+                If spanishIndicator Then sms = 2
+                If spanishIndicator And phone.Type = "MOBILE" Then sms = 3
 
-            If sms = 0 And spanishIndicator Then sms = 2 'Spanish no text
-            If sms = 1 And spanishIndicator Then sms = 3 'Spanish text
-
-            If Not phone Is Nothing Then
-                If Not phone.SMS Then sms = 0 'Missing or invalid mobile number
-                If Not providerID Is Nothing Then
-                    If providerID.Length <> 0 Then
-                        If Left(providerID, 14).ToUpper <> "ENGINEPROVIDER" Then
-                            If providerID <> Nothing And apptDate <> Nothing Then
-                                'Phone, LocationID, DocID, ApptDateTime, SpecialMessage, PatientName, SMS, Extra
-                                outputWriter.Write(phone.Number)
-                                outputWriter.Write(", " & locID)
-                                outputWriter.Write(", " & providerID)
-                                outputWriter.Write(", " & apptDate.ToString("MM/dd/yyyy H:mm"))
-                                outputWriter.Write(", " & msg)
-                                outputWriter.Write(", " & row(0).ToString.Trim) 'First Name
-                                outputWriter.Write(", " & sms)
-                                outputWriter.Write(", " & row(2).ToString.Trim) 'Account# / Extra
-                                outputWriter.WriteLine("")
-                            End If
-                        End If
-                    End If
-                End If
+                'Phone, LocationID, DocID, ApptDateTime, SpecialMessage, PatientName, SMS, Extra
+                outputWriter.Write(phone.Number)
+                outputWriter.Write(", " & locID)
+                outputWriter.Write(", " & providerID)
+                outputWriter.Write(", " & apptDate.ToString("MM/dd/yyyy H:mm"))
+                outputWriter.Write(", " & msg)
+                outputWriter.Write(", " & row(0).ToString.Trim) 'First Name
+                outputWriter.Write(", " & sms)
+                outputWriter.Write(", " & row(2).ToString.Trim) 'Account# / Extra
+                outputWriter.WriteLine("")
             End If
-        End If
+        End if
     End Sub
     '=================================================================================================
     'Method Name:	Trans.DetermineMeeting

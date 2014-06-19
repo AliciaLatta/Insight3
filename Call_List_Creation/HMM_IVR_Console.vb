@@ -549,7 +549,7 @@ Public Class HMM_IVR_Console
             lblMsg.Text = "The config file must have an accurate value for EngineProviderTotal."
         End If
         txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
-        lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("ProviderListCSV").ToString).ToUpper
+        lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("CSVFile").ToString).ToUpper
         Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString).ToUpper
         If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
             lblCallLogic.Text = "Only home phone numbers ending in OK will be called"
@@ -903,8 +903,8 @@ Public Class HMM_IVR_Console
         Dim fDialog As New OpenFileDialog
 
         fDialog.Title = "Get Provider List in CSV Format"
-        fDialog.Filter = "CSV Files|*.csv"
-        fDialog.InitialDirectory = "C:\"
+        '   fDialog.Filter = "CSV Files|*.csv"
+        '  fDialog.InitialDirectory = "C:\"
 
         If fDialog.ShowDialog() = DialogResult.OK Then
             lblCSVFile.Text = fDialog.FileName.ToString()
@@ -1007,8 +1007,8 @@ Public Class HMM_IVR_Console
         Dim fDialog As New OpenFileDialog
 
         fDialog.Title = "Get Report in Tab Delimited Format"
-        fDialog.Filter = "Tab Delimited Files|*.txt"
-        fDialog.InitialDirectory = "C:\"
+        '     fDialog.Filter = "Tab Delimited Files|*.txt"
+        '    fDialog.InitialDirectory = "C:\"
 
         If fDialog.ShowDialog() = DialogResult.OK Then
             Me.lblInsightReport.Text = fDialog.FileName.ToString()
