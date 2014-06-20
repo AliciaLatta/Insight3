@@ -49,6 +49,7 @@ Public Class DataExport
     Dim ReportFile, CallListFile As FileInfo
     Dim outputReader As StreamReader
     Dim outputWriter, exceptionWriter As StreamWriter
+    Dim exceptions As ArrayList
     Dim callListFilePath2 As String
     Shared meetingType As String
     Shared msg As String = String.Empty
@@ -67,19 +68,31 @@ Public Class DataExport
             ByVal useCSV As Boolean, ByVal CSVFile As String, ByVal ReportFilePath As String) As String
 
         Dim callListFilePath, exceptionFilePath As String 'Strings to store filenames
-
         Try
-            'Get current settings from the configuration file
-            callListFilePath = ConfigurationManager.AppSettings("CallListFile").ToString
-            exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString
-        Catch e As Exception
-            'Problem with the config file
-            UpdateResults("There was a problem with the configuration file: " & e.ToString)
+            Try
+                'Get current settings from the configuration file
+                callListFilePath = ConfigurationManager.AppSettings("CallListFile").ToString
+                exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString
+            Catch e As Exception
+                'Problem with the config file
+                UpdateResults("There was a problem with the configuration file: " & e.ToString)
+                Return results
+            End Try
+            ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, meetingTypeArray, useCSV, CSVFile)
+            CloseReaders()
             Return results
+
+        Catch ex As Exception
+        Finally
+            CloseReaders()
+            exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString()
+            exceptionWriter = New StreamWriter(exceptionFilePath, False)
+            For Each row As String In exceptions
+                exceptionWriter.WriteLine(row)
+            Next
+            exceptionWriter.Close() 
         End Try
-        ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, meetingTypeArray, useCSV, CSVFile)
-        CloseReaders()
-        Return results
+        
     End Function
     '=================================================================================================
     'Method Name:	DataExport.ArchiveCallList
@@ -123,10 +136,10 @@ Public Class DataExport
     End Sub
     Private Sub CloseReaders()
         Try
-            If Not exceptionWriter Is Nothing Then
-                exceptionWriter.Close()
-                exceptionWriter = Nothing
-            End If
+            'If Not exceptionWriter Is Nothing Then
+            '    exceptionWriter.Close()
+            '    exceptionWriter = Nothing
+            'End If
             If Not outputWriter Is Nothing Then
                 outputWriter.Close()
                 outputWriter = Nothing
@@ -177,11 +190,9 @@ Public Class DataExport
         Dim y As Integer
         Dim exists As Boolean
         Dim xlsReader As StreamReader
-        '   Dim xReader As 
         Dim dt As DataTable
         callListFilePath2 = callListFilePath
         Try
-
             'Delete any lines in the output file left from the last run of the program      
             Try
                 CallListFile = New FileInfo(callListFilePath)
@@ -194,20 +205,17 @@ Public Class DataExport
                 Throw e
             End Try
 
-            Try
-                'Create the directories if they're not there already
-                CheckForMissingDirectory(exceptionFilePath)
-                'Create an instace of StreamWriter to interact with the log files
-                exceptionWriter = New StreamWriter(exceptionFilePath, False)
-                'Write out a header in the file to separate runs
-                exceptionWriter.WriteLine(New String("*", 100))
-                exceptionWriter.WriteLine("* Run Date: " & Date.Now.ToString("f"))
-                exceptionWriter.WriteLine(New String("*", 100))
-                exceptionWriter.WriteLine("")
-            Catch e As Exception
-                _error = "Error writing to the exception log.  Make sure it's not open."
-                Throw e
-            End Try
+            'Try
+            'Create the directories if they're not there already
+            CheckForMissingDirectory(exceptionFilePath)
+            'Create an instace of StreamWriter to interact with the log files
+            exceptions = New ArrayList()
+            'Write out a header in the file to separate runs
+            exceptions.Add(New String("*", 100))
+            exceptions.Add("* Run Date: " & Date.Now.ToString("f"))
+            exceptions.Add(New String("*", 100))
+            exceptions.Add("")
+
             If File.Exists(reportFilePath) Then
                 ReportFile = New FileInfo(reportFilePath)
                 If ReportFile.LastWriteTime < Date.Now.AddHours(-8) Then
@@ -221,9 +229,7 @@ Public Class DataExport
                 Try
                     'Get report
                     xlsReader = New StreamReader(reportFilePath)
-
                     dt = BuildDataTable(xlsReader)
-
                 Catch e As Exception
                     UpdateResults(OpenReportFile & ": " & e.Message)
                     If xlsReader IsNot Nothing Then
@@ -332,10 +338,8 @@ Public Class DataExport
                     Exit Sub
                 End Try
 
-                exceptionWriter.WriteLine("")
-                exceptionWriter.WriteLine("Rows Written: " & records.Count - 1)
-                exceptionWriter.Close()
-                exceptionWriter = Nothing
+                exceptions.Add("")
+                exceptions.Add("Rows Written: " & records.Count - 1)
                 'Need to subtract the last line (*EOF*) from the count
                 'Write out the processing results to the screen
                 UpdateResultsFinal(New String("-", 100))
@@ -357,10 +361,8 @@ Public Class DataExport
                 UpdateResultsFinal(New String("-", 100))
             Else
                 'Write a line to the log file to indicate that the input file did not exist
-                exceptionWriter.WriteLine("Input File: " & reportFilePath & " does not exist.")
-                exceptionWriter.Close()
-                exceptionWriter = Nothing
-                'Let user know that input file does not exist
+                exceptions.Add("Input File: " & reportFilePath & " does not exist.")
+                ''Let user know that input file does not exist
                 UpdateResults("Input File: " & reportFilePath & " does not exist.")
             End If
         Catch ex As Exception
@@ -369,8 +371,7 @@ Public Class DataExport
             CloseReaders()
             If Not outputWriter Is Nothing Then outputWriter.Close()
             If Not outputReader Is Nothing Then outputReader.Dispose()
-            If Not exceptionWriter Is Nothing Then exceptionWriter.Close()
-        End Try
+         End Try
     End Sub
 
     Private Function ProcessRow(ByVal row As DataRow, ByVal callListFilePath As String, _
@@ -436,7 +437,6 @@ Public Class DataExport
         End Try
 
         Return ProcessingStatus.SuccessfulRow
-
     End Function
 
     Public Class Phone
@@ -451,7 +451,6 @@ Public Class DataExport
             Me.Type = Type
             Me.Number = Number
             Me.Status = Status
-            'Me.SMS = SMS
         End Sub
     End Class
 
@@ -521,7 +520,7 @@ Public Class DataExport
          
         If retval Is Nothing Then
             msg = "NO CALL will be made to " & name & " as a valid number does not exist."
-            WriteException(msg)
+            AddException(msg)
             Return retval
         Else
             Dim ok As Boolean = False
@@ -534,7 +533,7 @@ Public Class DataExport
             Next
             If Not ok Then
                 msg = "NO CALL will be made to " & name & " as a valid number does not exist."
-                WriteException(msg)
+                AddException(msg)
                 Return retval
             End If
         End If
@@ -552,7 +551,7 @@ Public Class DataExport
             Next
             'If we get here, mobile number doesn't exist
             msg = "UNABLE to TEXT " & name & " as mobile number is missing.  " & msg2
-            WriteException(msg)
+            AddException(msg)
             Return retval
         Else 'They want to call home 
             msg2 = "Will use " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & "(" & retval.Type & ") instead."
@@ -560,31 +559,22 @@ Public Class DataExport
                 With phone
                     If .Type.StartsWith("HOME") Then
                         msg = "UNABLE to CALL " & .Type & " of " & name & " as " & .Type & " number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
-                        WriteException(msg)
+                        AddException(msg)
                         Return retval
                     End If
                 End With
             Next
             'If we get here, home number doesn't exist
             msg = "UNABLE to CALL HOME of " & name & ";  " & msg2
-            WriteException(msg)
+            AddException(msg)
             Return retval
         End If
         'Return retval
     End Function
-    Private Sub WriteException(ByVal msg As String)
-        exceptionWriter.WriteLine(msg)
-        exceptionWriter.WriteLine("------------------------------------------------------------------------------------------------------------------------------")
+    Private Sub AddException(ByVal msg As String)
+        exceptions.Add(msg)
+        exceptions.Add("------------------------------------------------------------------------------------------------------------------------------")
     End Sub
-    'Private Sub WriteException(ByVal message As String)
-    '    exceptionWriter.WriteLine(message)
-    '    exceptionWriter.WriteLine("-----------------------------------------------------------------------------------------------------------------------------")
-    'End Sub
-    '=================================================================================================
-    'Method Name:	DataExport.WriteAllButRecord
-    'Description:	Writes a record in the 'AllBut' logic
-    'Property of Archipelago Systems, LLC.
-    '=================================================================================================
     Private Sub WriteRecord(ByVal row As DataRow, ByVal providerID As String, ByVal daysPrior As Integer, _
                         ByVal apptDate As Date, ByVal logic As LogicType)
         Dim privateIndicator, okayIndicator, spanishIndicator As Boolean
