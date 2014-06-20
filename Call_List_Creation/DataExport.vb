@@ -48,9 +48,8 @@ Public Class DataExport
     Private Const problemReadingReportXLS As String = "There is a problem with the columns in the Insight Report tab delimited file.  Please check that they all exist."
     Dim ReportFile, CallListFile As FileInfo
     Dim outputReader As StreamReader
-    Dim outputWriter, exceptionWriter As StreamWriter
-    Dim exceptions As ArrayList
-    Dim callListFilePath2 As String
+    ' Dim outputWriter As StreamWriter
+    Dim exceptions, callrows As ArrayList
     Shared meetingType As String
     Shared msg As String = String.Empty
     Shared locID As Integer = 1
@@ -86,7 +85,7 @@ Public Class DataExport
         Finally
             CloseReaders()
             exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString()
-            exceptionWriter = New StreamWriter(exceptionFilePath, False)
+            Dim exceptionWriter As StreamWriter = New StreamWriter(exceptionFilePath, False)
             For Each row As String In exceptions
                 exceptionWriter.WriteLine(row)
             Next
@@ -140,10 +139,10 @@ Public Class DataExport
             '    exceptionWriter.Close()
             '    exceptionWriter = Nothing
             'End If
-            If Not outputWriter Is Nothing Then
-                outputWriter.Close()
-                outputWriter = Nothing
-            End If
+            'If Not outputWriter Is Nothing Then
+            '    outputWriter.Close()
+            '    outputWriter = Nothing
+            'End If
             If Not CallListFile Is Nothing Then
                 CallListFile = Nothing
             End If
@@ -162,14 +161,7 @@ Public Class DataExport
             End If
         End Try
     End Sub
-    Private Sub ErrorCloseReaders()
-        'Close readers, writers and files
-        CallListFile = New FileInfo(callListFilePath2)
-        If CallListFile.Exists Then
-            CallListFile.Delete()
-        End If
-        CloseReaders()
-    End Sub
+   
     '=================================================================================================
     'Method Name:	DataExport.ProcessTransactions
     'Description:	Processes all transactions in the Input file
@@ -183,15 +175,14 @@ Public Class DataExport
 
         Dim skipCounter As Integer
         Dim processedCounter As Integer
-        Dim line As String
+        ' Dim line As String
         Dim splitout As Array
-        Dim records As ArrayList
+        ' Dim records As ArrayList
         Dim x As Integer
         Dim y As Integer
         Dim exists As Boolean
         Dim xlsReader As StreamReader
-        Dim dt As DataTable
-        callListFilePath2 = callListFilePath
+        Dim dt As DataTable 
         Try
             'Delete any lines in the output file left from the last run of the program      
             Try
@@ -243,7 +234,7 @@ Public Class DataExport
 
                 Try
                     CallListFile = New FileInfo(callListFilePath)
-                    outputWriter = New StreamWriter(callListFilePath)
+                    '   outputWriter = New StreamWriter(callListFilePath)
                 Catch e As Exception
                     UpdateResults("Problem creating the Call List File: " & e.Message)
                     Exit Sub
@@ -269,84 +260,93 @@ Public Class DataExport
                     End If
                 Next
 
-                outputWriter.Close()
-                If Not outputReader Is Nothing Then outputReader.Dispose()
+                ' outputWriter.Close()
+                ' If Not outputReader Is Nothing Then outputReader.Dispose()
 
                 'Count the number of lines in the output file
-                outputReader = New StreamReader(callListFilePath)
+                '   outputReader = New StreamReader(callListFilePath)
                 'Add the header lines to the records array
-                records = New ArrayList
-                records.Add(outputReader.ReadLine)
-                records.Add(outputReader.ReadLine)
-                records.Add(outputReader.ReadLine)
-                records.Add(outputReader.ReadLine)
-                line = outputReader.ReadLine
-
-                Do While Not line Is Nothing
-                    If line.Length > 0 Then
-                        'Count the number records printed to the call list
-                        'Find any duplicate phone numbers and only print the first appointment of the day
-                        splitout = Split(line, ",")
-                        'Create a new array with no duplicates
-                        'Look through records to see if the phone numbers have been added yet
-                        Dim recordsSplitout As Array
-                        Dim replace As Boolean
+                'records = New ArrayList
+                'records.Add(outputReader.ReadLine)
+                'records.Add(outputReader.ReadLine)
+                'records.Add(outputReader.ReadLine)
+                'records.Add(outputReader.ReadLine)
+                'line = outputReader.ReadLine
+                Dim keepers As New ArrayList
+                Dim allrows As New ArrayList
+                Dim splitout2 As Array
+                Dim dup As Boolean
+                Dim time1, time2 As DateTime
+                Dim phone1, phone2, name1, name2 As String
+                x = 0
+                For Each row As String In callrows
+                    If x > 0 Then
+                        'Count the number records in the call list
+                        'Find any duplicate phone number - name combos and only print the first appointment of the day
+                        splitout = Split(row, ",")
+                        phone1 = splitout(0).ToString.Trim
+                        name1 = splitout(5).ToString.Trim
+                        time1 = Convert.ToDateTime(splitout(3).ToString.Trim)
                         y = 0
-                        Do Until y = records.Count
-                            recordsSplitout = Split(records(y), ",")
-                            Try
-                                If Trim(recordsSplitout(0)) = Trim(splitout(0)) And Trim(recordsSplitout(4)) = Trim(splitout(4)) Then
-                                    exists = True
-                                    If Convert.ToDateTime(Trim(recordsSplitout(3))) > Convert.ToDateTime(Trim(splitout(3))) Then
-                                        'Replace the existing record with this one because the appt time is earlier
-                                        records.RemoveAt(y)
-                                        replace = True
-                                        Exit Do
+                        For Each row2 As String In callrows
+                            exists = False
+                            If y > 0 Then 'skip the header
+                                splitout2 = Split(row2, ",")
+                                phone2 = splitout2(0).ToString.Trim
+                                name2 = splitout2(5).ToString.Trim
+                                time2 = Convert.ToDateTime(splitout2(3).ToString.Trim)
+                                Try
+                                    If phone1 = phone2 And name1 = name2 Then
+                                        If time1 > time2 Then 'Only leave it if it's the earlier time
+                                            dup = True
+                                            Exit For
+                                        End If
                                     End If
-                                End If
-                            Catch ex As Exception
-                                'Handle argument out-of-range exception
-                            End Try
-                            y += 1
-                        Loop
-                        If Not exists Or replace Then
-                            records.Add(line)
-                        Else
-                            If replace = True Then
-                                records.Add(line)
+                                Catch ex As Exception
+                                    'Handle argument out-of-range exception
+                                End Try
                             End If
-                        End If
-                        exists = False
-                        line = outputReader.ReadLine
+                            y += 1
+                        Next
+                        If Not dup Then allrows.Add(row)
+                        dup = False
+                    Else : x += 1
                     End If
-                Loop
+                Next
+
+                callrows = allrows
 
                 Try
-                    x = 0
-                    outputReader.Close()
-                    outputReader = Nothing
-                    outputWriter = New StreamWriter(callListFilePath)
-                    Do Until x = (records.Count)
-                        outputWriter.WriteLine(records(x))
-                        x += 1
-                    Loop
-                    outputWriter.WriteLine("*EOF*")
-                    outputWriter.Close()
-                    If outputReader IsNot Nothing Then outputReader.Dispose()
+                    'x = 0
+                    'outputReader.Close()
+                    'outputReader = Nothing
+                    'outputWriter = New StreamWriter(callListFilePath)
+                    'Do Until x = (records.Count)
+                    '    outputWriter.WriteLine(records(x))
+                    '    x += 1
+                    'Loop
+                    'This is where we will open and write to the outputWriter
+                    Dim callsWriter As New StreamWriter(callListFilePath)
+                    callrows.Add("*EOF*")
+                    For Each row As String In callrows
+                        callsWriter.WriteLine(row)
+                    Next
+                    callsWriter.Close()
+                    'If outputReader IsNot Nothing Then outputReader.Dispose()
                 Catch ex As Exception
                     UpdateResults(ProgramError & ": " & ex.Message)
                     Exit Sub
                 End Try
 
                 exceptions.Add("")
-                exceptions.Add("Rows Written: " & records.Count - 1)
+                exceptions.Add("Rows Written: " & callrows.Count - 1)
                 'Need to subtract the last line (*EOF*) from the count
                 'Write out the processing results to the screen
                 UpdateResultsFinal(New String("-", 100))
                 UpdateResultsFinal(vbCrLf & "Run Date: " & Date.Now.ToString("s"))
                 UpdateResultsFinal(vbCrLf & "Processing Complete" & vbCrLf)
                 'If the row count is less than 0, set it to 0
-                UpdateResultsFinal(vbCrLf & "Rows Written: " & records.Count - 1 & vbCrLf & vbCrLf)
+                UpdateResultsFinal(vbCrLf & "Rows Written: " & callrows.Count - 1 & vbCrLf & vbCrLf)
                 UpdateResultsFinal("Call list created in ")
                 'Rename file
                 Dim newName As String
@@ -369,9 +369,9 @@ Public Class DataExport
             UpdateResults(_error & ": " & ex.Message)
         Finally
             CloseReaders()
-            If Not outputWriter Is Nothing Then outputWriter.Close()
+            ' If Not outputWriter Is Nothing Then outputWriter.Close()
             If Not outputReader Is Nothing Then outputReader.Dispose()
-         End Try
+        End Try
     End Sub
 
     Private Function ProcessRow(ByVal row As DataRow, ByVal callListFilePath As String, _
@@ -399,7 +399,8 @@ Public Class DataExport
                 _error = invalidCallTime
                 Return ProcessingStatus.ErroredRow
             End If
-            outputWriter.WriteLine("Phone,LocationID,DocID,ApptDateTime,SpecialMessage,PatientName,SMS,Extra")
+            callrows = New ArrayList()
+            callrows.Add("Phone,LocationID,DocID,ApptDateTime,SpecialMessage,PatientName,SMS,Extra")
         End If
 
         meetingType = row(9).ToString.Trim
@@ -439,6 +440,19 @@ Public Class DataExport
         Return ProcessingStatus.SuccessfulRow
     End Function
 
+    Public Class CustomRow
+        Public Property data As String
+        Public Property duplicate As Boolean
+
+        Public Sub New()
+
+        End Sub
+
+        Public Sub New(ByVal data As String, ByVal duplicate As Boolean)
+            Me.data = data
+            Me.duplicate = duplicate
+        End Sub
+    End Class
     Public Class Phone
         Public Property Type As String
         Public Property Number As String
@@ -618,15 +632,18 @@ Public Class DataExport
                 If spanishIndicator And phone.Type = "MOBILE" Then sms = 3
 
                 'Phone, LocationID, DocID, ApptDateTime, SpecialMessage, PatientName, SMS, Extra
-                outputWriter.Write(phone.Number)
-                outputWriter.Write(", " & locID)
-                outputWriter.Write(", " & providerID)
-                outputWriter.Write(", " & apptDate.ToString("MM/dd/yyyy H:mm"))
-                outputWriter.Write(", " & msg)
-                outputWriter.Write(", " & row(0).ToString.Trim) 'First Name
-                outputWriter.Write(", " & sms)
-                outputWriter.Write(", " & row(2).ToString.Trim) 'Account# / Extra
-                outputWriter.WriteLine("")
+                Dim srow As String
+
+                srow = phone.Number
+                srow += ", " & locID
+                srow += ", " & providerID
+                srow += ", " & apptDate.ToString("MM/dd/yyyy H:mm")
+                srow += ", " & msg
+                srow += ", " & row(0).ToString.Trim() 'First Name
+                srow += ", " & sms
+                srow += ", " & row(2).ToString.Trim() 'Account# / Extra
+                srow += ""
+                callrows.Add(srow)
             End If
         End if
     End Sub
