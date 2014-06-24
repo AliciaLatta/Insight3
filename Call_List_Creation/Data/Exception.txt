@@ -1,5 +1,5 @@
 ****************************************************************************************************
-* Run Date: Thursday, June 19, 2014 1:15 PM
+* Run Date: Tuesday, June 24, 2014 2:19 PM
 ****************************************************************************************************
 
 NO CALL will be made to PLACIDO GUILLEN-GUZMAN as a valid number does not exist.
@@ -25,4 +25,4 @@ UNABLE to TEXT ANY SUAREZ-RUIZ as mobile number is missing.  Voice call will be 
 NO CALL will be made to COLTON INGRAM as a valid number does not exist.
 ------------------------------------------------------------------------------------------------------------------------------
 
-Rows Written: 32
+Rows Written: 34

@@ -65,7 +65,7 @@ Public Class DataExport
     Public Function Main(ByVal custID As String, ByVal daysPrior As Integer, ByVal scheduledDaysPrior As String, _
             ByVal meetingTypeArray() As String, _
             ByVal useCSV As Boolean, ByVal CSVFile As String, ByVal ReportFilePath As String) As String
-
+        Dim exceptionWriter As StreamWriter
         Dim callListFilePath, exceptionFilePath As String 'Strings to store filenames
         Try
             Try
@@ -78,18 +78,22 @@ Public Class DataExport
                 Return results
             End Try
             ProcessTransactions(ReportFilePath, callListFilePath, exceptionFilePath, custID, daysPrior, scheduledDaysPrior, meetingTypeArray, useCSV, CSVFile)
-            CloseReaders()
+            exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString()
+            exceptionWriter = New StreamWriter(exceptionFilePath, False)
+            For Each row As String In exceptions
+                exceptionWriter.WriteLine(row)
+            Next
             Return results
 
         Catch ex As Exception
         Finally
             CloseReaders()
-            exceptionFilePath = ConfigurationManager.AppSettings("ExceptionFile").ToString()
-            Dim exceptionWriter As StreamWriter = New StreamWriter(exceptionFilePath, False)
-            For Each row As String In exceptions
-                exceptionWriter.WriteLine(row)
-            Next
-            exceptionWriter.Close() 
+
+            If exceptionWriter IsNot Nothing Then
+                exceptionWriter.Close()
+                exceptionWriter.Dispose()
+            End If
+           
         End Try
         
     End Function

@@ -47,11 +47,7 @@ Public Class HMM_IVR_Console
     'Do not modify it using the code editor.
     Friend WithEvents Label15 As System.Windows.Forms.Label
     Friend WithEvents btnDeleteType As System.Windows.Forms.Button
-    Friend WithEvents btnDefaultAreaCodeHelp As System.Windows.Forms.Button
     Friend WithEvents Label16 As System.Windows.Forms.Label
-    Friend WithEvents btnProviderListHelp As System.Windows.Forms.Button
-    Friend WithEvents btnMeetingTypesHelp As System.Windows.Forms.Button
-    Friend WithEvents bntScheduledDateHelp As System.Windows.Forms.Button
     Friend WithEvents txtScheduledDaysPrior As System.Windows.Forms.TextBox
     Friend WithEvents Label14 As System.Windows.Forms.Label
     Friend WithEvents Label12 As System.Windows.Forms.Label
@@ -69,7 +65,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents lblMsg As System.Windows.Forms.Label
     Friend WithEvents btnFTP As System.Windows.Forms.Button
     Friend WithEvents btnCreateFile As System.Windows.Forms.Button
-    Friend WithEvents btnCallLogicHelp As System.Windows.Forms.Button
     Friend WithEvents Label11 As System.Windows.Forms.Label
     Friend WithEvents lblCallLogic As System.Windows.Forms.Label
     Friend WithEvents ChooseCSV As System.Windows.Forms.Button
@@ -85,10 +80,6 @@ Public Class HMM_IVR_Console
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(HMM_IVR_Console))
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btnDeleteType = New System.Windows.Forms.Button()
-        Me.btnDefaultAreaCodeHelp = New System.Windows.Forms.Button()
-        Me.btnProviderListHelp = New System.Windows.Forms.Button()
-        Me.btnMeetingTypesHelp = New System.Windows.Forms.Button()
-        Me.bntScheduledDateHelp = New System.Windows.Forms.Button()
         Me.txtScheduledDaysPrior = New System.Windows.Forms.TextBox()
         Me.Label14 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
@@ -106,7 +97,6 @@ Public Class HMM_IVR_Console
         Me.lblMsg = New System.Windows.Forms.Label()
         Me.btnFTP = New System.Windows.Forms.Button()
         Me.btnCreateFile = New System.Windows.Forms.Button()
-        Me.btnCallLogicHelp = New System.Windows.Forms.Button()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.lblCallLogic = New System.Windows.Forms.Label()
         Me.ChooseCSV = New System.Windows.Forms.Button()
@@ -138,47 +128,11 @@ Public Class HMM_IVR_Console
         Me.btnDeleteType.TabIndex = 57
         Me.btnDeleteType.Text = "Remove"
         '
-        'btnDefaultAreaCodeHelp
-        '
-        Me.btnDefaultAreaCodeHelp.Location = New System.Drawing.Point(552, 12)
-        Me.btnDefaultAreaCodeHelp.Name = "btnDefaultAreaCodeHelp"
-        Me.btnDefaultAreaCodeHelp.Size = New System.Drawing.Size(16, 24)
-        Me.btnDefaultAreaCodeHelp.TabIndex = 64
-        Me.btnDefaultAreaCodeHelp.Text = "?"
-        '
-        'btnProviderListHelp
-        '
-        Me.btnProviderListHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnProviderListHelp.Location = New System.Drawing.Point(150, 224)
-        Me.btnProviderListHelp.Name = "btnProviderListHelp"
-        Me.btnProviderListHelp.Size = New System.Drawing.Size(16, 23)
-        Me.btnProviderListHelp.TabIndex = 109
-        Me.btnProviderListHelp.Text = "?"
-        '
-        'btnMeetingTypesHelp
-        '
-        Me.btnMeetingTypesHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnMeetingTypesHelp.Location = New System.Drawing.Point(324, 109)
-        Me.btnMeetingTypesHelp.Name = "btnMeetingTypesHelp"
-        Me.btnMeetingTypesHelp.Size = New System.Drawing.Size(16, 23)
-        Me.btnMeetingTypesHelp.TabIndex = 108
-        Me.btnMeetingTypesHelp.Text = "?"
-        '
-        'bntScheduledDateHelp
-        '
-        Me.bntScheduledDateHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.bntScheduledDateHelp.Location = New System.Drawing.Point(624, 122)
-        Me.bntScheduledDateHelp.Name = "bntScheduledDateHelp"
-        Me.bntScheduledDateHelp.Size = New System.Drawing.Size(16, 23)
-        Me.bntScheduledDateHelp.TabIndex = 107
-        Me.bntScheduledDateHelp.Text = "?"
-        Me.bntScheduledDateHelp.Visible = False
-        '
         'txtScheduledDaysPrior
         '
         Me.txtScheduledDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScheduledDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtScheduledDaysPrior.Location = New System.Drawing.Point(625, 98)
+        Me.txtScheduledDaysPrior.Location = New System.Drawing.Point(426, 79)
         Me.txtScheduledDaysPrior.Name = "txtScheduledDaysPrior"
         Me.txtScheduledDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtScheduledDaysPrior.TabIndex = 105
@@ -187,7 +141,7 @@ Public Class HMM_IVR_Console
         'Label14
         '
         Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(472, 131)
+        Me.Label14.Location = New System.Drawing.Point(447, 84)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(168, 24)
         Me.Label14.TabIndex = 104
@@ -198,7 +152,7 @@ Public Class HMM_IVR_Console
         '
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Label12.Location = New System.Drawing.Point(432, 106)
+        Me.Label12.Location = New System.Drawing.Point(233, 86)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(208, 24)
         Me.Label12.TabIndex = 103
@@ -336,15 +290,6 @@ Public Class HMM_IVR_Console
         Me.btnCreateFile.Text = "Create Call List "
         Me.btnCreateFile.UseVisualStyleBackColor = False
         '
-        'btnCallLogicHelp
-        '
-        Me.btnCallLogicHelp.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCallLogicHelp.Location = New System.Drawing.Point(137, 82)
-        Me.btnCallLogicHelp.Name = "btnCallLogicHelp"
-        Me.btnCallLogicHelp.Size = New System.Drawing.Size(16, 23)
-        Me.btnCallLogicHelp.TabIndex = 112
-        Me.btnCallLogicHelp.Text = "?"
-        '
         'Label11
         '
         Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -360,7 +305,7 @@ Public Class HMM_IVR_Console
         Me.lblCallLogic.ForeColor = System.Drawing.SystemColors.ActiveCaption
         Me.lblCallLogic.Location = New System.Drawing.Point(159, 82)
         Me.lblCallLogic.Name = "lblCallLogic"
-        Me.lblCallLogic.Size = New System.Drawing.Size(409, 23)
+        Me.lblCallLogic.Size = New System.Drawing.Size(77, 23)
         Me.lblCallLogic.TabIndex = 110
         Me.lblCallLogic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -461,12 +406,8 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.lblMsg)
         Me.Controls.Add(Me.btnFTP)
         Me.Controls.Add(Me.btnCreateFile)
-        Me.Controls.Add(Me.btnCallLogicHelp)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.lblCallLogic)
-        Me.Controls.Add(Me.btnProviderListHelp)
-        Me.Controls.Add(Me.btnMeetingTypesHelp)
-        Me.Controls.Add(Me.bntScheduledDateHelp)
         Me.Controls.Add(Me.txtScheduledDaysPrior)
         Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.Label12)
@@ -481,7 +422,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.txtDaysPrior)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.btnDefaultAreaCodeHelp)
         Me.Controls.Add(Me.btnDeleteType)
         Me.Controls.Add(Me.Label15)
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -723,7 +663,7 @@ Public Class HMM_IVR_Console
             lblTypeMsg.ForeColor = System.Drawing.Color.Black
         End If
     End Sub
-    Private Sub btnDefaultAreaCodeHelp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDefaultAreaCodeHelp.Click
+    Private Sub btnDefaultAreaCodeHelp_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim form As frmDefaultAreaCodeHelp
         form = New frmDefaultAreaCodeHelp
         form.Show()
@@ -875,25 +815,25 @@ Public Class HMM_IVR_Console
             lblTypeMsg.Text = "The maximum of " & max & " types has been reached."
         End If
     End Sub
-    Private Sub btnCallLogicHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCallLogicHelp.Click
+    Private Sub btnCallLogicHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim form As frmCallLogicHelp
         form = New frmCallLogicHelp
         form.Show()
         form.BringToFront()
     End Sub
-    Private Sub bntScheduledDateHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles bntScheduledDateHelp.Click
+    Private Sub bntScheduledDateHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim form As frmScheduledDateHelp
         form = New frmScheduledDateHelp
         form.Show()
         form.BringToFront()
     End Sub
-    Private Sub btnMeetingTypesHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnMeetingTypesHelp.Click
+    Private Sub btnMeetingTypesHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim form As frmMeetingTypes
         form = New frmMeetingTypes
         form.Show()
         form.BringToFront()
     End Sub
-    Private Sub btnProviderListHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnProviderListHelp.Click
+    Private Sub btnProviderListHelp_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs)
         Dim form As frmProviderListHelp
         form = New frmProviderListHelp
         form.Show()
