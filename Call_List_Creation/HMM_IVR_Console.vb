@@ -131,7 +131,6 @@ Public Class HMM_IVR_Console
         Me.txtScheduledDaysPrior.Name = "txtScheduledDaysPrior"
         Me.txtScheduledDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtScheduledDaysPrior.TabIndex = 105
-        Me.txtScheduledDaysPrior.Visible = False
         '
         'Label12
         '
@@ -142,7 +141,6 @@ Public Class HMM_IVR_Console
         Me.Label12.Size = New System.Drawing.Size(319, 24)
         Me.Label12.TabIndex = 103
         Me.Label12.Text = "Don't call if the scheduled date is within how many days of appt?"
-        Me.Label12.Visible = False
         '
         'lblTypeMsg
         '
@@ -211,7 +209,7 @@ Public Class HMM_IVR_Console
         '
         Me.txtDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtDaysPrior.Location = New System.Drawing.Point(569, 15)
+        Me.txtDaysPrior.Location = New System.Drawing.Point(574, 15)
         Me.txtDaysPrior.Name = "txtDaysPrior"
         Me.txtDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtDaysPrior.TabIndex = 93
@@ -271,7 +269,7 @@ Public Class HMM_IVR_Console
         Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label11.Location = New System.Drawing.Point(80, 43)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(64, 23)
+        Me.Label11.Size = New System.Drawing.Size(60, 23)
         Me.Label11.TabIndex = 111
         Me.Label11.Text = "Call Logic:"
         '
@@ -279,7 +277,7 @@ Public Class HMM_IVR_Console
         '
         Me.lblCallLogic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCallLogic.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblCallLogic.Location = New System.Drawing.Point(140, 41)
+        Me.lblCallLogic.Location = New System.Drawing.Point(143, 41)
         Me.lblCallLogic.Name = "lblCallLogic"
         Me.lblCallLogic.Size = New System.Drawing.Size(433, 23)
         Me.lblCallLogic.TabIndex = 110
