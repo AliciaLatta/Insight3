@@ -16,7 +16,6 @@ Imports System.Text.RegularExpressions
 
 Public Class HMM_IVR_Console
     Inherits System.Windows.Forms.Form
-
 #Region " Windows Form Designer generated code "
 
     Public Sub New()
@@ -49,7 +48,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents btnDeleteType As System.Windows.Forms.Button
     Friend WithEvents Label16 As System.Windows.Forms.Label
     Friend WithEvents txtScheduledDaysPrior As System.Windows.Forms.TextBox
-    Friend WithEvents Label14 As System.Windows.Forms.Label
     Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents lblTypeMsg As System.Windows.Forms.Label
     Friend WithEvents btnAddNew As System.Windows.Forms.Button
@@ -58,7 +56,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents ListBox1 As System.Windows.Forms.ListBox
-    Friend WithEvents Label6 As System.Windows.Forms.Label
     Friend WithEvents txtDaysPrior As System.Windows.Forms.TextBox
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents Label2 As System.Windows.Forms.Label
@@ -81,7 +78,6 @@ Public Class HMM_IVR_Console
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btnDeleteType = New System.Windows.Forms.Button()
         Me.txtScheduledDaysPrior = New System.Windows.Forms.TextBox()
-        Me.Label14 = New System.Windows.Forms.Label()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.lblTypeMsg = New System.Windows.Forms.Label()
         Me.btnAddNew = New System.Windows.Forms.Button()
@@ -90,7 +86,6 @@ Public Class HMM_IVR_Console
         Me.Label7 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.ListBox1 = New System.Windows.Forms.ListBox()
-        Me.Label6 = New System.Windows.Forms.Label()
         Me.txtDaysPrior = New System.Windows.Forms.TextBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -113,7 +108,7 @@ Public Class HMM_IVR_Console
         'Label15
         '
         Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(397, 18)
+        Me.Label15.Location = New System.Drawing.Point(207, 18)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(128, 23)
         Me.Label15.TabIndex = 36
@@ -122,7 +117,7 @@ Public Class HMM_IVR_Console
         'btnDeleteType
         '
         Me.btnDeleteType.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDeleteType.Location = New System.Drawing.Point(237, 172)
+        Me.btnDeleteType.Location = New System.Drawing.Point(235, 148)
         Me.btnDeleteType.Name = "btnDeleteType"
         Me.btnDeleteType.Size = New System.Drawing.Size(56, 23)
         Me.btnDeleteType.TabIndex = 57
@@ -132,46 +127,36 @@ Public Class HMM_IVR_Console
         '
         Me.txtScheduledDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtScheduledDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtScheduledDaysPrior.Location = New System.Drawing.Point(426, 79)
+        Me.txtScheduledDaysPrior.Location = New System.Drawing.Point(399, 66)
         Me.txtScheduledDaysPrior.Name = "txtScheduledDaysPrior"
         Me.txtScheduledDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtScheduledDaysPrior.TabIndex = 105
         Me.txtScheduledDaysPrior.Visible = False
         '
-        'Label14
-        '
-        Me.Label14.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(447, 84)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(168, 24)
-        Me.Label14.TabIndex = 104
-        Me.Label14.Text = "day(s) of the appointment date."
-        Me.Label14.Visible = False
-        '
         'Label12
         '
         Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label12.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Label12.Location = New System.Drawing.Point(233, 86)
+        Me.Label12.Location = New System.Drawing.Point(79, 67)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(208, 24)
+        Me.Label12.Size = New System.Drawing.Size(319, 24)
         Me.Label12.TabIndex = 103
-        Me.Label12.Text = "Don't call if the scheduled date is within"
+        Me.Label12.Text = "Don't call if the scheduled date is within how many days of appt?"
         Me.Label12.Visible = False
         '
         'lblTypeMsg
         '
         Me.lblTypeMsg.ForeColor = System.Drawing.Color.Red
-        Me.lblTypeMsg.Location = New System.Drawing.Point(114, 93)
+        Me.lblTypeMsg.Location = New System.Drawing.Point(84, 153)
         Me.lblTypeMsg.Name = "lblTypeMsg"
-        Me.lblTypeMsg.Size = New System.Drawing.Size(122, 12)
+        Me.lblTypeMsg.Size = New System.Drawing.Size(135, 34)
         Me.lblTypeMsg.TabIndex = 102
         Me.lblTypeMsg.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'btnAddNew
         '
         Me.btnAddNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnAddNew.Location = New System.Drawing.Point(237, 140)
+        Me.btnAddNew.Location = New System.Drawing.Point(235, 116)
         Me.btnAddNew.Name = "btnAddNew"
         Me.btnAddNew.Size = New System.Drawing.Size(56, 23)
         Me.btnAddNew.TabIndex = 101
@@ -181,7 +166,7 @@ Public Class HMM_IVR_Console
         '
         Me.txtNewType.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtNewType.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtNewType.Location = New System.Drawing.Point(85, 140)
+        Me.txtNewType.Location = New System.Drawing.Point(83, 116)
         Me.txtNewType.Name = "txtNewType"
         Me.txtNewType.Size = New System.Drawing.Size(136, 20)
         Me.txtNewType.TabIndex = 100
@@ -190,7 +175,7 @@ Public Class HMM_IVR_Console
         '
         Me.ListBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBox2.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ListBox2.Location = New System.Drawing.Point(84, 247)
+        Me.ListBox2.Location = New System.Drawing.Point(82, 223)
         Me.ListBox2.Name = "ListBox2"
         Me.ListBox2.Size = New System.Drawing.Size(352, 95)
         Me.ListBox2.TabIndex = 99
@@ -198,7 +183,7 @@ Public Class HMM_IVR_Console
         'Label7
         '
         Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(81, 229)
+        Me.Label7.Location = New System.Drawing.Point(79, 205)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(96, 23)
         Me.Label7.TabIndex = 98
@@ -207,7 +192,7 @@ Public Class HMM_IVR_Console
         'Label5
         '
         Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(81, 116)
+        Me.Label5.Location = New System.Drawing.Point(79, 92)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(279, 16)
         Me.Label5.TabIndex = 97
@@ -217,25 +202,16 @@ Public Class HMM_IVR_Console
         '
         Me.ListBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBox1.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ListBox1.Location = New System.Drawing.Point(306, 140)
+        Me.ListBox1.Location = New System.Drawing.Point(304, 116)
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.Size = New System.Drawing.Size(160, 95)
         Me.ListBox1.TabIndex = 96
-        '
-        'Label6
-        '
-        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(162, 51)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(146, 18)
-        Me.Label6.TabIndex = 94
-        Me.Label6.Text = " day(s) prior to appointment."
         '
         'txtDaysPrior
         '
         Me.txtDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtDaysPrior.Location = New System.Drawing.Point(137, 46)
+        Me.txtDaysPrior.Location = New System.Drawing.Point(569, 15)
         Me.txtDaysPrior.Name = "txtDaysPrior"
         Me.txtDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtDaysPrior.TabIndex = 93
@@ -243,16 +219,16 @@ Public Class HMM_IVR_Console
         'Label4
         '
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(81, 50)
+        Me.Label4.Location = New System.Drawing.Point(346, 17)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(64, 23)
+        Me.Label4.Size = New System.Drawing.Size(231, 23)
         Me.Label4.TabIndex = 92
-        Me.Label4.Text = "Place call"
+        Me.Label4.Text = "No of days calls should be made prior to appt:"
         '
         'Label2
         '
         Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(81, 18)
+        Me.Label2.Location = New System.Drawing.Point(80, 18)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(88, 20)
         Me.Label2.TabIndex = 89
@@ -262,9 +238,9 @@ Public Class HMM_IVR_Console
         '
         Me.lblMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMsg.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblMsg.Location = New System.Drawing.Point(7, 447)
+        Me.lblMsg.Location = New System.Drawing.Point(7, 429)
         Me.lblMsg.Name = "lblMsg"
-        Me.lblMsg.Size = New System.Drawing.Size(656, 109)
+        Me.lblMsg.Size = New System.Drawing.Size(656, 122)
         Me.lblMsg.TabIndex = 115
         Me.lblMsg.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -272,7 +248,7 @@ Public Class HMM_IVR_Console
         '
         Me.btnFTP.BackColor = System.Drawing.Color.White
         Me.btnFTP.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFTP.Location = New System.Drawing.Point(303, 417)
+        Me.btnFTP.Location = New System.Drawing.Point(303, 392)
         Me.btnFTP.Name = "btnFTP"
         Me.btnFTP.Size = New System.Drawing.Size(222, 27)
         Me.btnFTP.TabIndex = 114
@@ -283,7 +259,7 @@ Public Class HMM_IVR_Console
         '
         Me.btnCreateFile.BackColor = System.Drawing.Color.White
         Me.btnCreateFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCreateFile.Location = New System.Drawing.Point(85, 417)
+        Me.btnCreateFile.Location = New System.Drawing.Point(85, 392)
         Me.btnCreateFile.Name = "btnCreateFile"
         Me.btnCreateFile.Size = New System.Drawing.Size(138, 27)
         Me.btnCreateFile.TabIndex = 113
@@ -293,7 +269,7 @@ Public Class HMM_IVR_Console
         'Label11
         '
         Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(81, 87)
+        Me.Label11.Location = New System.Drawing.Point(80, 43)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(64, 23)
         Me.Label11.TabIndex = 111
@@ -303,16 +279,16 @@ Public Class HMM_IVR_Console
         '
         Me.lblCallLogic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCallLogic.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblCallLogic.Location = New System.Drawing.Point(159, 82)
+        Me.lblCallLogic.Location = New System.Drawing.Point(140, 41)
         Me.lblCallLogic.Name = "lblCallLogic"
-        Me.lblCallLogic.Size = New System.Drawing.Size(77, 23)
+        Me.lblCallLogic.Size = New System.Drawing.Size(433, 23)
         Me.lblCallLogic.TabIndex = 110
         Me.lblCallLogic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'ChooseCSV
         '
         Me.ChooseCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChooseCSV.Location = New System.Drawing.Point(172, 351)
+        Me.ChooseCSV.Location = New System.Drawing.Point(172, 327)
         Me.ChooseCSV.Name = "ChooseCSV"
         Me.ChooseCSV.Size = New System.Drawing.Size(34, 23)
         Me.ChooseCSV.TabIndex = 116
@@ -321,7 +297,7 @@ Public Class HMM_IVR_Console
         'chkUseCSV
         '
         Me.chkUseCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkUseCSV.Location = New System.Drawing.Point(450, 253)
+        Me.chkUseCSV.Location = New System.Drawing.Point(448, 229)
         Me.chkUseCSV.Name = "chkUseCSV"
         Me.chkUseCSV.Size = New System.Drawing.Size(176, 40)
         Me.chkUseCSV.TabIndex = 117
@@ -331,7 +307,7 @@ Public Class HMM_IVR_Console
         '
         Me.lblCSVFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCSVFile.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblCSVFile.Location = New System.Drawing.Point(212, 351)
+        Me.lblCSVFile.Location = New System.Drawing.Point(212, 327)
         Me.lblCSVFile.Name = "lblCSVFile"
         Me.lblCSVFile.Size = New System.Drawing.Size(402, 23)
         Me.lblCSVFile.TabIndex = 118
@@ -339,7 +315,7 @@ Public Class HMM_IVR_Console
         'Label17
         '
         Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label17.Location = New System.Drawing.Point(81, 356)
+        Me.Label17.Location = New System.Drawing.Point(81, 332)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(85, 23)
         Me.Label17.TabIndex = 119
@@ -348,24 +324,24 @@ Public Class HMM_IVR_Console
         'txtCustID
         '
         Me.txtCustID.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCustID.Location = New System.Drawing.Point(154, 16)
+        Me.txtCustID.Location = New System.Drawing.Point(149, 16)
         Me.txtCustID.Name = "txtCustID"
-        Me.txtCustID.Size = New System.Drawing.Size(128, 20)
+        Me.txtCustID.Size = New System.Drawing.Size(52, 20)
         Me.txtCustID.TabIndex = 120
         '
         'txtAreaCode
         '
         Me.txtAreaCode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtAreaCode.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtAreaCode.Location = New System.Drawing.Point(497, 14)
+        Me.txtAreaCode.Location = New System.Drawing.Point(303, 15)
         Me.txtAreaCode.Name = "txtAreaCode"
-        Me.txtAreaCode.Size = New System.Drawing.Size(49, 22)
+        Me.txtAreaCode.Size = New System.Drawing.Size(38, 22)
         Me.txtAreaCode.TabIndex = 121
         '
         'Label1
         '
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(82, 385)
+        Me.Label1.Location = New System.Drawing.Point(82, 365)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(85, 23)
         Me.Label1.TabIndex = 124
@@ -375,7 +351,7 @@ Public Class HMM_IVR_Console
         '
         Me.lblInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblInsightReport.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblInsightReport.Location = New System.Drawing.Point(213, 380)
+        Me.lblInsightReport.Location = New System.Drawing.Point(213, 360)
         Me.lblInsightReport.Name = "lblInsightReport"
         Me.lblInsightReport.Size = New System.Drawing.Size(402, 23)
         Me.lblInsightReport.TabIndex = 123
@@ -383,7 +359,7 @@ Public Class HMM_IVR_Console
         'ChooseInsightReport
         '
         Me.ChooseInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChooseInsightReport.Location = New System.Drawing.Point(173, 380)
+        Me.ChooseInsightReport.Location = New System.Drawing.Point(173, 360)
         Me.ChooseInsightReport.Name = "ChooseInsightReport"
         Me.ChooseInsightReport.Size = New System.Drawing.Size(34, 23)
         Me.ChooseInsightReport.TabIndex = 122
@@ -409,7 +385,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.lblCallLogic)
         Me.Controls.Add(Me.txtScheduledDaysPrior)
-        Me.Controls.Add(Me.Label14)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.lblTypeMsg)
         Me.Controls.Add(Me.btnAddNew)
@@ -418,7 +393,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.ListBox1)
-        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.txtDaysPrior)
         Me.Controls.Add(Me.Label4)
         Me.Controls.Add(Me.Label2)
@@ -435,8 +409,6 @@ Public Class HMM_IVR_Console
 
 #End Region
     Dim configPath As String
-    'Dim callHour As String
-    'Dim callMinute As String
 
     Private Sub HMM_IVR_Console_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
@@ -449,33 +421,6 @@ Public Class HMM_IVR_Console
         txtCustID.Text = Trim(ConfigurationManager.AppSettings("CustId").ToString)
         txtDaysPrior.Text = Trim(ConfigurationManager.AppSettings("DaysPrior").ToString)
         txtScheduledDaysPrior.Text = Trim(ConfigurationManager.AppSettings("ScheduledDaysPrior").ToString)
-        '  callMinute = "00"
-        'Select Case Trim(ConfigurationManager.AppSettings("CallHour").ToString)
-        '    Case "08"
-        '        If Trim(ConfigurationManager.AppSettings("CallMinute").ToString) = "30" Then
-        '            cmbCallTime.SelectedText = "8:30 am"
-        '        Else
-        '            cmbCallTime.SelectedText = "8 am"
-        '        End If
-        '    Case "09"
-        '        cmbCallTime.SelectedText = "9 am"
-        '    Case "10"
-        '        cmbCallTime.SelectedText = "10 am"
-        '    Case "11"
-        '        cmbCallTime.SelectedText = "11 am"
-        '    Case "12"
-        '        cmbCallTime.SelectedText = "12 pm"
-        '    Case "14"
-        '        cmbCallTime.SelectedText = "2 pm"
-        '    Case "16"
-        '        cmbCallTime.SelectedText = "4 pm"
-        '    Case "17"
-        '        If Trim(ConfigurationManager.AppSettings("CallMinute").ToString) = "30" Then
-        '            cmbCallTime.SelectedText = "5:30 pm"
-        '        Else
-        '            cmbCallTime.SelectedText = "5 pm"
-        '        End If
-        'End Select
         If Trim(ConfigurationManager.AppSettings("MeetingSkipTypeTotal").ToString) <> "" Then
             BuildSkipTypeListBox()
         Else
@@ -579,26 +524,17 @@ Public Class HMM_IVR_Console
         xDoc.Save(FName)
     End Sub
     Private Sub FTP()
-        Dim localFile As String = ConfigurationManager.AppSettings("CallListFile").ToString
-        Dim localPath As String = ConfigurationManager.AppSettings("DataFolderPath").ToString
         Dim host As String = ConfigurationManager.AppSettings("Server").ToString
         Dim username As String = ConfigurationManager.AppSettings("Username").ToString
         Dim password As String = ConfigurationManager.AppSettings("Password").ToString
+        Dim callList As String = ConfigurationManager.AppSettings("CallListFile").ToString
         Dim URI As String
         Dim ftp As System.Net.FtpWebRequest
-        Dim export As New DataExport
-        Dim datetimestampFile As String()
-        Dim datetimestamp As String = Today.Now.Ticks.ToString
+        ' Dim export As New DataExport
 
         Try
-            datetimestampFile = localFile.Split(".")
-            datetimestampFile(0) = datetimestampFile(0) & "_" & datetimestamp
-            datetimestampFile(0) = datetimestampFile(0) & ".txt"
+            URI = host & "/" & My.Computer.FileSystem.GetFileInfo(callList).Name
 
-            localPath = localPath & "CallList_" & ConfigurationManager.AppSettings("CustID").ToString & "_" & datetimestamp & ".txt"
-
-            File.Move(localFile, localPath)
-            URI = host & "/CallList_" & datetimestamp & ".txt"
             ftp = CType(FtpWebRequest.Create(URI), FtpWebRequest)
 
             'Make the connection secure
@@ -611,7 +547,7 @@ Public Class HMM_IVR_Console
             clsRequest.Method = System.Net.WebRequestMethods.Ftp.UploadFile
 
             ' read in file...
-            Dim bFile() As Byte = System.IO.File.ReadAllBytes(localPath)
+            Dim bFile() As Byte = System.IO.File.ReadAllBytes(callList)
 
             ' upload file...
             Dim clsStream As System.IO.Stream = _
@@ -622,12 +558,17 @@ Public Class HMM_IVR_Console
             clsStream.Dispose()
 
             'Archive
-            File.Move(localPath, ConfigurationManager.AppSettings("OutputArchive") & "CallList_" & datetimestamp & ".txt")
+            Dim archive As String = ConfigurationManager.AppSettings("OutputArchive") & "\" & My.Computer.FileSystem.GetFileInfo(callList).Name
+            If My.Computer.FileSystem.FileExists(archive) Then
+                My.Computer.FileSystem.DeleteFile(archive)
+            End If
+
+            If File.Exists(callList) Then File.Delete(callList)
+            File.Move(callList, ConfigurationManager.AppSettings("OutputArchive"))
 
         Catch ex As Exception
             Throw ex
         End Try
-
     End Sub
     Private Sub RebexFTP()
         Dim _ftp As New Rebex.Net.Ftp
@@ -697,34 +638,6 @@ Public Class HMM_IVR_Console
         ReplaceConfigSettings(configPath, "CustId", txtCustID.Text)
         ReplaceConfigSettings(configPath, "ScheduledDaysPrior", txtScheduledDaysPrior.Text)
         ReplaceConfigSettings(configPath, "DefaultAreaCode", txtAreaCode.Text)
-        'Convert the earliest call time
-        '    callMinute = "00"
-        'Select Case cmbCallTime.Text
-        '    Case "8 am"
-        '        callHour = "08"
-        '    Case "8:30 am"
-        '        callHour = "08"
-        '        callMinute = "30"
-        '    Case "9 am"
-        '        callHour = "09"
-        '    Case "10 am"
-        '        callHour = "10"
-        '    Case "11 am"
-        '        callHour = "11"
-        '    Case "12 pm"
-        '        callHour = "12"
-        '    Case "2 pm"
-        '        callHour = "14"
-        '    Case "4 pm"
-        '        callHour = "16"
-        '    Case "5 pm"
-        '        callHour = "17"
-        '    Case "5:30 pm"
-        '        callHour = "17"
-        '        callMinute = "30"
-        'End Select
-        'ReplaceConfigSettings(configPath, "CallHour", callHour)
-        'ReplaceConfigSettings(configPath, "CallMinute", callMinute)
         ReplaceConfigSettings(configPath, "UseCSV", chkUseCSV.Checked)
         ReplaceConfigSettings(configPath, "CSVFile", lblCSVFile.Text)
         ReplaceConfigSettings(configPath, "ReportFile", Me.lblInsightReport.Text)
@@ -759,7 +672,7 @@ Public Class HMM_IVR_Console
                     End If
                     line = reportReader.ReadLine
                 Loop
-                Return writtenCounter - 5
+                Return writtenCounter - 2
             Else
                 Return 0
             End If
@@ -853,10 +766,8 @@ Public Class HMM_IVR_Console
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
         Dim meetingTypeArray(CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
-        Dim x As Integer
-        'Dim cursor As System.Windows.Forms.Cursor
         Dim useCSV As Boolean
-        Dim scheduledDaysPrior As Integer
+        Dim scheduledDaysPrior, x As Integer
 
         cursor.Current() = System.Windows.Forms.Cursors.WaitCursor
         lblMsg.ForeColor = System.Drawing.Color.Black
@@ -868,12 +779,7 @@ Public Class HMM_IVR_Console
             lblMsg.Text = "Customer ID is missing."
             Exit Sub
         End If
-        ''The earliest time to call must not be blank
-        'If Trim(cmbCallTime.Text) = "" Then
-        '    lblMsg.ForeColor = System.Drawing.Color.Red
-        '    lblMsg.Text = "The earliest time to call must be specified."
-        '    Exit Sub
-        'End If
+       
         'If the Use CSV option is selected, a file must be chosen
         If chkUseCSV.Checked Then
             If Trim(lblCSVFile.Text) = "" Then
@@ -902,12 +808,7 @@ Public Class HMM_IVR_Console
                 Exit Sub
             End Try
         End If
-        Try
-            Save()
-        Catch ex As Exception
-            lblMsg.Text = ex.Message
-            Exit Sub
-        End Try
+
         'Build array of values from ListBox
         x = 0
         Do Until x = ListBox1.Items.Count
@@ -915,7 +816,14 @@ Public Class HMM_IVR_Console
             x += 1
         Loop
 
-        lblMsg.Text = export.Main(Trim(txtCustID.Text), Convert.ToInt32(Trim(txtDaysPrior.Text)), Trim(txtScheduledDaysPrior.Text), meetingTypeArray, useCSV, lblCSVFile.Text, lblInsightReport.Text)
+        Try
+            Save()
+        Catch ex As Exception
+            lblMsg.Text = ex.Message
+            Exit Sub
+        End Try
+
+        lblMsg.Text = export.Main(meetingTypeArray)
 
         If lblMsg.Text.EndsWith("-") Then
             lblMsg.ForeColor = System.Drawing.Color.Black
@@ -954,4 +862,6 @@ Public Class HMM_IVR_Console
             Me.lblInsightReport.Text = fDialog.FileName.ToString()
         End If
     End Sub
+
+   
 End Class
