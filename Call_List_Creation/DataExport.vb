@@ -18,10 +18,7 @@ Public Class DataExport
         SkippedRow
         WrittenRow
     End Enum
-    Private Enum PhoneType
-        Mobile
-        Home
-    End Enum
+   
     Private Enum LogicType
         AllBut
         NoneBut
@@ -29,7 +26,6 @@ Public Class DataExport
 #End Region
 #Region "Variables"
     'Declare variable used as the return string for main
-    Dim results As String
     Private Const _className As String = "DataExport"
     Private Const skipReasonMeetingType As String = "Meeting Type"
     Private Const skipReasonPrivPhone As String = "PRIV Keyword"
@@ -47,7 +43,6 @@ Public Class DataExport
     Private Const problemReadingReportXLS As String = "There is a problem with the columns in the Insight Report tab delimited file.  Please check that they all exist."
     Dim ReportFile As FileInfo
     Dim outputReader As StreamReader
-    ' Dim outputWriter As StreamWriter
     Dim exceptions As ArrayList
     Dim callRows As New ArrayList()
     Shared meetingType As String
@@ -56,33 +51,22 @@ Public Class DataExport
     Private _error As String 'Member level variable used to hold the error message
     Dim gCallDate As String
     Shared callDate As Date
-    Dim meetingTypeArray() As String
-    Dim cust As New Customer()
-   
+    Dim output As OutputResults
+    Dim cust As Customer
 #End Region
    
-    Public Function Main(ByVal meetingTypes() As String) As String
-        cust.ID = ConfigurationManager.AppSettings("CustId")
-        cust.ArchivePath = ConfigurationManager.AppSettings("OutputArchive")
-        cust.AreaCode = ConfigurationManager.AppSettings("DefaultAreaCode")
-        cust.CSVPath = ConfigurationManager.AppSettings("CSVFile")
-        cust.DataFolderPath = ConfigurationManager.AppSettings("DataFolderPath")
-        cust.Engine = ConfigurationManager.AppSettings("Engine")
-        cust.ErrorPath = ConfigurationManager.AppSettings("ExceptionFile")
-        cust.ReportPath = ConfigurationManager.AppSettings("ReportFile")
-        cust.DaysPrior = ConfigurationManager.AppSettings("DaysPrior")
-        cust.UseCSV = ConfigurationManager.AppSettings("UseCSV")
-        cust.CallLogic = ConfigurationManager.AppSettings("CallLogic")
-
+    Public Function Main(ByVal icust As Customer) As OutputResults
         Dim exceptionWriter As StreamWriter
+        cust = icust
+        output = New OutputResults()
         Try
-            meetingTypeArray = meetingTypes
-            ProcessTransactions() 
+            ProcessTransactions(cust)
             exceptionWriter = New StreamWriter(cust.ErrorPath, False)
             For Each row As String In exceptions
                 exceptionWriter.WriteLine(row)
             Next
-            Return results
+            output.ExceptionCount = exceptions.Count
+            Return output
         Catch ex As Exception
         Finally
             CloseReaders()
@@ -97,7 +81,7 @@ Public Class DataExport
     'Description:	Writes and executes the FTP script
     'Property of Archipelago Systems, LLC.
     '=================================================================================================
-    Public Function ArchiveCallList() As Boolean
+    Public Function ArchiveCallList(ByVal cust As Customer) As Boolean
         Try
             'Create the directories if they're not there already
             Dim archive As String()
@@ -106,7 +90,7 @@ Public Class DataExport
             archive(0) = archive(0) & ".txt"
             CheckForMissingDirectory(cust.ArchivePath)
             'Move the file to the archive
-            File.Move(cust.CallListPath, archive(0).ToString())
+            File.Move(output.CallListPath, archive(0).ToString())
         Catch ex As Exception
             Throw ex
         End Try
@@ -117,13 +101,11 @@ Public Class DataExport
     'Description:	Updates a string that holds the results of the execution of the integration file creation code
     'Property of Archipelago Systems, LLC.
     '=================================================================================================
-    Private Sub UpdateResults(ByVal status As String)
-        results = results & status
-        CloseReaders()
+    Private Sub UpdateResults(ByVal status As String, ByVal fatal As Boolean)
+        output.FatalError = fatal
+        output.Msg = output.Msg & status
     End Sub
-    Private Sub UpdateResultsFinal(ByVal status As String)
-        results = results & status
-    End Sub
+   
     Private Sub CloseReaders()
         Try
             If Not ReportFile Is Nothing Then
@@ -135,7 +117,7 @@ Public Class DataExport
             End If
         Catch e As Exception
             'Problem with the config file
-            UpdateResults("Exception: " & e.Message)
+            UpdateResults("Exception: " & e.Message, True)
         End Try
     End Sub
 
@@ -144,7 +126,7 @@ Public Class DataExport
     'Description:	Processes all transactions in the Input file
     'Property of Archipelago Systems, LLC.
     '=================================================================================================
-    Private Sub ProcessTransactions()
+    Private Sub ProcessTransactions(ByVal cust As Customer)
         'Dim skipCounter As Integer
         'Dim processedCounter As Integer
         Dim splitout As Array
@@ -161,38 +143,39 @@ Public Class DataExport
             exceptions.Add(New String("*", 100))
             exceptions.Add("")
 
-            Dim reportFilePath As String = ConfigurationManager.AppSettings("ReportFile")
-            If File.Exists(reportFilePath) Then
-                ReportFile = New FileInfo(reportFilePath)
+            '    Dim reportFilePath As String = ConfigurationManager.AppSettings("ReportFile")
+            If File.Exists(cust.ReportPath) Then
+                ReportFile = New FileInfo(cust.ReportPath)
                 If ReportFile.LastWriteTime < Date.Now.AddHours(-8) Then
-                    UpdateResults("The report was created more than 8 hours ago.  Please recreate it and try again.")
+                    UpdateResults("The report was created more than 8 hours ago.  Please recreate it and try again.", True)
                     Exit Sub
                 End If
                 'Create the directories if they're not there already
-                CheckForMissingDirectory(reportFilePath)
+                CheckForMissingDirectory(cust.ReportPath)
                 Try
                     'Get report
-                    xlsReader = New StreamReader(reportFilePath)
+                    xlsReader = New StreamReader(cust.ReportPath)
                     dt = BuildDataTable(xlsReader)
                 Catch e As Exception
-                    UpdateResults(OpenReportFile & ": " & e.Message)
+                    UpdateResults(OpenReportFile & ": " & e.Message, True)
                     If xlsReader IsNot Nothing Then
                         xlsReader.Close()
                         xlsReader = Nothing
                     End If
                     Exit Sub
                 End Try
-             
+
                 For Each row As DataRow In dt.Rows
                     cust.RowCount = (cust.RowCount + 1)
                     If cust.RowCount > 1 Then
-                        Select Case ProcessRow(row)
+                        Select Case ProcessRow(row, cust)
                             Case ProcessingStatus.SuccessfulRow
                                 cust.ProcessedCount += 1
                             Case ProcessingStatus.SkippedRow
                                 cust.SkippedCount += 1
                             Case ProcessingStatus.ErroredRow
-                                UpdateResults(ProcessError)
+                                UpdateResults(ProcessError, False)
+                                output.FatalError = True
                                 Exit Sub
                             Case ProcessingStatus.WrittenRow
                         End Select
@@ -216,40 +199,38 @@ Public Class DataExport
                     y = 0
                     For Each row2 As String In callRows
                         exists = False
-                        If y > 0 Then 'skip the header
-                            splitout2 = Split(row2, ",")
-                            phone2 = splitout2(0).ToString.Trim
-                            name2 = splitout2(5).ToString.Trim
-                            time2 = Convert.ToDateTime(splitout2(3).ToString.Trim)
-                            Try
-                                If phone1 = phone2 And name1 = name2 Then
-                                    If time1 > time2 Then 'Only leave it if it's the earlier time
-                                        dup = True
-                                        Exit For
-                                    End If
+
+                        splitout2 = Split(row2, ",")
+                        phone2 = splitout2(0).ToString.Trim
+                        name2 = splitout2(5).ToString.Trim
+                        time2 = Convert.ToDateTime(splitout2(3).ToString.Trim)
+                        Try
+                            If phone1 = phone2 And name1 = name2 Then
+                                If time1 > time2 Then 'Only leave it if it's the earlier time
+                                    dup = True
+                                    Exit For
                                 End If
-                            Catch ex As Exception
-                                'Handle argument out-of-range exception
-                            End Try
-                        End If
-                        y += 1
+                            End If
+                        Catch ex As Exception
+                            'Handle argument out-of-range exception
+                        End Try
+                     
                     Next
                     If Not dup Then allrows.Add(row)
                     dup = False
                 Next
 
                 callRows = allrows
-                Dim callList, custID As String
-                custID = ConfigurationManager.AppSettings("CustId")
+                Dim callList As String
                 Dim callsWriter As StreamWriter
                 Try
                     'This is where we will open and write the call list
-                    callList = ConfigurationManager.AppSettings("DataFolderPath") & "CallList-" & gCallDate & "-" & custID & ".csv"
+                    callList = cust.DataFolderPath & "CallList" & cust.ClinicName & "_" & gCallDate & "-" & cust.ID & ".csv"
                     ReplaceConfigSettings("CallListFile", callList)
                     If My.Computer.FileSystem.FileExists(callList) Then
                         My.Computer.FileSystem.DeleteFile(callList)
                     End If
-
+                    output.CallListPath = callList
                     callsWriter = New StreamWriter(callList)
                     callRows.Add("*EOF*")
                     For Each row As String In callRows
@@ -258,32 +239,32 @@ Public Class DataExport
                     callsWriter.Close()
                     'If outputReader IsNot Nothing Then outputReader.Dispose()
                 Catch ex As Exception
-                    UpdateResults("Exception: " & ex.Message)
+                    UpdateResults("Exception: " & ex.Message, True)
                     If callsWriter IsNot Nothing Then callsWriter.Close()
                     Exit Sub
                 End Try
-
+                output.CallsCount = callRows.Count - 2
                 exceptions.Add("")
-                exceptions.Add("Rows Written: " & callRows.Count - 2)
+                exceptions.Add("Rows Written: " & output.CallsCount)
                 'Need to subtract the last line (*EOF*) from the count
                 'Write out the processing results to the screen
-                UpdateResultsFinal(New String("-", 100))
-                UpdateResultsFinal(vbCrLf & "Run Date: " & Date.Now.ToString("s"))
-                UpdateResultsFinal(vbCrLf & "Processing Complete" & vbCrLf)
+                UpdateResults(New String("-", 100), False)
+                UpdateResults(vbCrLf & "Run Date: " & Date.Now.ToString("s"), False)
+                UpdateResults(vbCrLf & "Processing Complete" & vbCrLf, False)
                 'If the row count is less than 0, set it to 0
-                UpdateResultsFinal(vbCrLf & "Rows Written: " & callRows.Count - 2 & vbCrLf & vbCrLf)
-                UpdateResultsFinal("Call list created in ")
-               
-                UpdateResultsFinal(callList & vbCrLf)
-                UpdateResultsFinal(New String("-", 100))
+                UpdateResults(vbCrLf & "Rows Written: " & output.CallsCount & vbCrLf & vbCrLf, False)
+                UpdateResults("Call list created in ", False)
+
+                UpdateResults(callList & vbCrLf, False)
+                UpdateResults(New String("-", 100), False)
             Else
                 'Write a line to the log file to indicate that the input file did not exist
-                exceptions.Add("Input File: " & reportFilePath & " does not exist.")
+                exceptions.Add("Input File: " & cust.ReportPath & " does not exist.")
                 ''Let user know that input file does not exist
-                UpdateResults("Input File: " & reportFilePath & " does not exist.")
+                UpdateResults("Input File: " & cust.ReportPath & " does not exist.", True)
             End If
         Catch ex As Exception
-            UpdateResults(_error & ": " & ex.Message)
+            UpdateResults(_error & ": " & ex.Message, True)
         Finally
             CloseReaders()
             ' If Not outputWriter Is Nothing Then outputWriter.Close()
@@ -308,7 +289,7 @@ Public Class DataExport
         xDoc.Save(path)
     End Sub
 
-    Private Function ProcessRow(ByVal row As DataRow) As ProcessingStatus
+    Private Function ProcessRow(ByVal row As DataRow, ByVal cust As Customer) As ProcessingStatus
         Dim InsightProviderID, IVRProviderID As String
         Dim apptDate As Date
 
@@ -332,13 +313,13 @@ Public Class DataExport
 
         meetingType = row(9).ToString.Trim
 
-        If DetermineMeeting(meetingType, meetingTypeArray) Then Return ProcessingStatus.SkippedRow 'Meeting type should be skipped
+        If DetermineMeeting(meetingType, cust.meetingTypeArray) Then Return ProcessingStatus.SkippedRow 'Meeting type should be skipped
 
         InsightProviderID = row(6).ToString.Trim
 
         Try
             If cust.UseCSV Then
-                If Not GetProviderID_FromCSV(IVRProviderID, InsightProviderID) Then
+                If Not GetProviderID_FromCSV(IVRProviderID, InsightProviderID, cust) Then
                     Return ProcessingStatus.ErroredRow
                 End If
             Else
@@ -355,9 +336,9 @@ Public Class DataExport
 
         Try
             If cust.CallLogic = LogicType.AllBut Then
-                WriteRecord(row, IVRProviderID, apptDate)
+                WriteRecord(row, IVRProviderID, apptDate, cust)
             Else
-                WriteRecord(row, IVRProviderID, apptDate)
+                WriteRecord(row, IVRProviderID, apptDate, cust)
             End If
         Catch ex As Exception
             Throw ex
@@ -366,21 +347,30 @@ Public Class DataExport
 
         Return ProcessingStatus.SuccessfulRow
     End Function
+
+    Public Class OutputResults
+        Public Property Msg As String
+        Public Property ExceptionCount As Integer
+        Public Property CallsCount As Integer
+        Public Property FatalError As Boolean
+        Public Property CallListPath As String
+    End Class
     Public Class Customer
         Public Property ID As String
+        Public Property ClinicName As String
         Public Property ErrorPath As String
         Public Property ReportPath As String
         Public Property CSVPath As String
         Public Property DataFolderPath As String
         Public Property Engine As String
         Public Property AreaCode As String
-        Public Property CallListPath As String
-        Public Property DaysPrior As String
+        Public Property DaysPrior As Integer
         Public Property ArchivePath As String
         Public Property UseCSV As Boolean
         Public Property RowCount As Integer
         Public Property ProcessedCount As Integer
         Public Property SkippedCount As Integer
+        Public Property meetingTypeArray As ArrayList
 
         Private _CallLogic As String
         Public Property CallLogic() As String
@@ -397,7 +387,7 @@ Public Class DataExport
         End Property
 
         Public Sub New()
-
+            meetingTypeArray = New ArrayList
         End Sub
     End Class
     Public Class CustomRow
@@ -459,7 +449,7 @@ Public Class DataExport
                     .Number = strNewPhone
                 End If
                 If strNewPhone.Length = 7 Then
-                    .Number = ConfigurationManager.AppSettings("DefaultAreaCode").ToString & .Number
+                    .Number = cust.AreaCode & .Number
                     .Status = "OK"
                     .Number = strNewPhone
                 End If
@@ -512,12 +502,12 @@ Public Class DataExport
             End If
         End If
         Dim msg2 As String
-
+       
         If sms Then 'Want a text
-            msg2 = "Voice call will be made to " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & "(" & retval.Type & ") instead."
+            msg2 = "Voice call will be made to " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & " (" & retval.Type & ") instead."
             For Each phone As Phone In phones
                 With phone
-                    If .Type.StartsWith("MOBILE") Then
+                    If .Type = "MOBILE" Then
                         msg = "UNABLE to TEXT " & name & " as mobile number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
                         Return retval
                     End If
@@ -528,10 +518,10 @@ Public Class DataExport
             AddException(msg)
             Return retval
         Else 'They want to call home 
-            msg2 = "Will use " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & "(" & retval.Type & ") instead."
+            msg2 = "Will use " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & " (" & retval.Type & ") instead."
             For Each phone As Phone In phones
                 With phone
-                    If .Type.StartsWith("HOME") Then
+                    If .Type = "HOME" Then
                         msg = "UNABLE to CALL " & .Type & " of " & name & " as " & .Type & " number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
                         AddException(msg)
                         Return retval
@@ -549,12 +539,12 @@ Public Class DataExport
         exceptions.Add(msg)
         exceptions.Add("------------------------------------------------------------------------------------------------------------------------------")
     End Sub
-    Private Sub WriteRecord(ByVal row As DataRow, ByVal providerID As String, ByVal apptDate As Date)
+    Private Sub WriteRecord(ByVal row As DataRow, ByVal providerID As String, ByVal apptDate As Date, ByVal cust As Customer)
         Dim privateIndicator, okayIndicator, spanishIndicator As Boolean
         Dim sms As Integer = 0
         Dim fullName As String
         Dim phone As Phone
-        Dim type As String = PhoneType.Home
+        Dim type As String = "HOME"
         Dim phoneList As New List(Of Phone)
 
         'Look for 'PR' in the Guar Class1, Guar Class2,	Pat Class1,	Pat Class2, and	Pat Class3 columns
@@ -586,10 +576,22 @@ Public Class DataExport
             phone = GetPhone(fullName, phoneList, (sms = 1))
 
             If phone.Status = "OK" And Not providerID Is Nothing And providerID.Length > 0 And Left(providerID, 14).ToUpper <> "ENGINEPROVIDER" And apptDate <> Nothing Then
-                spanishIndicator = row(21).ToString.ToUpper.Trim.StartsWith("SP")
-                If spanishIndicator Then sms = 2
-                If spanishIndicator And phone.Type = "MOBILE" Then sms = 3
 
+                '**************************************************************************************
+                ' English voice sms = 0
+                ' English text sms = 1
+                ' Spanish voice sms = 2
+                ' Spanish text sms = 3
+                '**************************************************************************************
+                spanishIndicator = row(21).ToString.ToUpper.Trim.StartsWith("SP")
+                If sms = 1 Then
+                    If phone.Type = "MOBILE" Then
+                    Else : sms = 0
+                    End If
+                End If
+                If spanishIndicator And sms = 1 Then sms = 3
+                If spanishIndicator And sms = 0 Then sms = 2
+                 
                 'Phone, LocationID, DocID, ApptDateTime, SpecialMessage, PatientName, SMS, Extra
                 Dim srow As String
 
@@ -606,24 +608,17 @@ Public Class DataExport
             End If
         End If
     End Sub
-    '=================================================================================================
-    'Method Name:	Trans.DetermineMeeting
-    'Description:	Returns boolean value of whether the record's meeting type should be skipped
-    'Property of Archipelago Systems, LLC.
-    '=================================================================================================
-    Private Function DetermineMeeting(ByVal meetingType As String, ByVal meetingTypeArray() As String) As Boolean
+
+    Private Function DetermineMeeting(ByVal meetingType As String, ByVal meetingTypeArray As ArrayList) As Boolean
         'Get the meeting type: If the type is listed in the config file as a type to skip, don't print the line
-        Dim y = 0
         Dim skipMeeting As Boolean
-        Do Until y = (CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer) + 1)
-            If Trim(meetingTypeArray(y)) <> "" Then
-                If meetingTypeArray(y).ToUpper = meetingType.ToUpper Then
+        For Each mtg As String In meetingTypeArray
+            If mtg.Length > 0 Then
+                If mtg = meetingType.ToUpper Then
                     skipMeeting = True
-                    y = (CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer))
                 End If
             End If
-            y += 1
-        Loop
+        Next
         Return skipMeeting
     End Function
 
@@ -676,7 +671,7 @@ Public Class DataExport
         Return False
     End Function
 
-    Private Function GetProviderID_FromCSV(ByRef IVRProviderID As String, ByVal InsightProviderID As String) As Boolean
+    Private Function GetProviderID_FromCSV(ByRef IVRProviderID As String, ByVal InsightProviderID As String, ByVal cust As Customer) As Boolean
         '*****************************************************************************************************
         '   Find the corresponding IVR provider id based on Insight OPEN provider 
         '   id and meeting type by parsing the xls file
@@ -684,7 +679,7 @@ Public Class DataExport
         '*****************************************************************************************************
         Dim xlsReader As StreamReader
         Dim xlsLine, lookupInsightOpenProviderID, lookupMeetingType As String
-        Dim splitOutProviderList As Array 
+        Dim splitOutProviderList As Array
         Try
             Try
                 xlsReader = New StreamReader(cust.CSVPath)

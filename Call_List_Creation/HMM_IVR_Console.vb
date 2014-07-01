@@ -11,8 +11,7 @@ Imports System.Resources
 'Imports Rebex.Net
 Imports System.Xml.Serialization
 Imports System.Text.RegularExpressions
-
-'Imports System.Windows.Forms
+Imports Call_List_Creation.DataExport
 
 Public Class HMM_IVR_Console
     Inherits System.Windows.Forms.Form
@@ -20,12 +19,8 @@ Public Class HMM_IVR_Console
 
     Public Sub New()
         MyBase.New()
-
         'This call is required by the Windows Form Designer.
         InitializeComponent()
-
-        'Add any initialization after the InitializeComponent() call
-
     End Sub
 
     'Form overrides dispose to clean up the component list.
@@ -47,8 +42,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents Label15 As System.Windows.Forms.Label
     Friend WithEvents btnDeleteType As System.Windows.Forms.Button
     Friend WithEvents Label16 As System.Windows.Forms.Label
-    Friend WithEvents txtScheduledDaysPrior As System.Windows.Forms.TextBox
-    Friend WithEvents Label12 As System.Windows.Forms.Label
     Friend WithEvents lblTypeMsg As System.Windows.Forms.Label
     Friend WithEvents btnAddNew As System.Windows.Forms.Button
     Friend WithEvents txtNewType As System.Windows.Forms.TextBox
@@ -77,8 +70,6 @@ Public Class HMM_IVR_Console
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(HMM_IVR_Console))
         Me.Label15 = New System.Windows.Forms.Label()
         Me.btnDeleteType = New System.Windows.Forms.Button()
-        Me.txtScheduledDaysPrior = New System.Windows.Forms.TextBox()
-        Me.Label12 = New System.Windows.Forms.Label()
         Me.lblTypeMsg = New System.Windows.Forms.Label()
         Me.btnAddNew = New System.Windows.Forms.Button()
         Me.txtNewType = New System.Windows.Forms.TextBox()
@@ -122,25 +113,6 @@ Public Class HMM_IVR_Console
         Me.btnDeleteType.Size = New System.Drawing.Size(56, 23)
         Me.btnDeleteType.TabIndex = 57
         Me.btnDeleteType.Text = "Remove"
-        '
-        'txtScheduledDaysPrior
-        '
-        Me.txtScheduledDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtScheduledDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtScheduledDaysPrior.Location = New System.Drawing.Point(399, 66)
-        Me.txtScheduledDaysPrior.Name = "txtScheduledDaysPrior"
-        Me.txtScheduledDaysPrior.Size = New System.Drawing.Size(24, 22)
-        Me.txtScheduledDaysPrior.TabIndex = 105
-        '
-        'Label12
-        '
-        Me.Label12.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.Label12.Location = New System.Drawing.Point(79, 67)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(319, 24)
-        Me.Label12.TabIndex = 103
-        Me.Label12.Text = "Don't call if the scheduled date is within how many days of appt?"
         '
         'lblTypeMsg
         '
@@ -209,7 +181,7 @@ Public Class HMM_IVR_Console
         '
         Me.txtDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtDaysPrior.Location = New System.Drawing.Point(574, 15)
+        Me.txtDaysPrior.Location = New System.Drawing.Point(307, 64)
         Me.txtDaysPrior.Name = "txtDaysPrior"
         Me.txtDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtDaysPrior.TabIndex = 93
@@ -217,7 +189,7 @@ Public Class HMM_IVR_Console
         'Label4
         '
         Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(346, 17)
+        Me.Label4.Location = New System.Drawing.Point(79, 67)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(231, 23)
         Me.Label4.TabIndex = 92
@@ -382,8 +354,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.btnCreateFile)
         Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.lblCallLogic)
-        Me.Controls.Add(Me.txtScheduledDaysPrior)
-        Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.lblTypeMsg)
         Me.Controls.Add(Me.btnAddNew)
         Me.Controls.Add(Me.txtNewType)
@@ -399,7 +369,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.1)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.2)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -407,7 +377,8 @@ Public Class HMM_IVR_Console
 
 #End Region
     Dim configPath As String
-
+    Dim cust As Customer
+    Dim output As OutputResults
     Private Sub HMM_IVR_Console_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
         GetConfigValues()
@@ -418,7 +389,6 @@ Public Class HMM_IVR_Console
     Private Sub GetConfigValues()
         txtCustID.Text = Trim(ConfigurationManager.AppSettings("CustId").ToString)
         txtDaysPrior.Text = Trim(ConfigurationManager.AppSettings("DaysPrior").ToString)
-        txtScheduledDaysPrior.Text = Trim(ConfigurationManager.AppSettings("ScheduledDaysPrior").ToString)
         If Trim(ConfigurationManager.AppSettings("MeetingSkipTypeTotal").ToString) <> "" Then
             BuildSkipTypeListBox()
         Else
@@ -521,6 +491,7 @@ Public Class HMM_IVR_Console
         Next
         xDoc.Save(FName)
     End Sub
+
     Private Sub FTP()
         Dim host As String = ConfigurationManager.AppSettings("Server").ToString
         Dim username As String = ConfigurationManager.AppSettings("Username").ToString
@@ -528,7 +499,6 @@ Public Class HMM_IVR_Console
         Dim callList As String = ConfigurationManager.AppSettings("CallListFile").ToString
         Dim URI As String
         Dim ftp As System.Net.FtpWebRequest
-        ' Dim export As New DataExport
 
         Try
             URI = host & "/" & My.Computer.FileSystem.GetFileInfo(callList).Name
@@ -556,13 +526,12 @@ Public Class HMM_IVR_Console
             clsStream.Dispose()
 
             'Archive
-            Dim archive As String = ConfigurationManager.AppSettings("OutputArchive") & "\" & My.Computer.FileSystem.GetFileInfo(callList).Name
+            Dim archive As String = ConfigurationManager.AppSettings("OutputArchive") & My.Computer.FileSystem.GetFileInfo(callList).Name
             If My.Computer.FileSystem.FileExists(archive) Then
                 My.Computer.FileSystem.DeleteFile(archive)
             End If
 
-            If File.Exists(callList) Then File.Delete(callList)
-            File.Move(callList, ConfigurationManager.AppSettings("OutputArchive"))
+            If File.Exists(callList) Then File.Move(callList, archive)
 
         Catch ex As Exception
             Throw ex
@@ -634,7 +603,6 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub Save()
         ReplaceConfigSettings(configPath, "CustId", txtCustID.Text)
-        ReplaceConfigSettings(configPath, "ScheduledDaysPrior", txtScheduledDaysPrior.Text)
         ReplaceConfigSettings(configPath, "DefaultAreaCode", txtAreaCode.Text)
         ReplaceConfigSettings(configPath, "UseCSV", chkUseCSV.Checked)
         ReplaceConfigSettings(configPath, "CSVFile", lblCSVFile.Text)
@@ -654,15 +622,28 @@ Public Class HMM_IVR_Console
             ReplaceConfigSettings(configPath, meetingType, "")
             x += 1
         Loop
+        cust.ID = txtCustID.Text.Trim
+        cust.ClinicName = ConfigurationManager.AppSettings("ClinicName").Trim
+        cust.DaysPrior = IIf(txtDaysPrior.Text.Trim.Length > 0, txtDaysPrior.Text.Trim, 0)
+        cust.AreaCode = txtAreaCode.Text.Trim
+        cust.UseCSV = chkUseCSV.Checked
+        cust.ReportPath = lblInsightReport.Text.Trim
+        cust.ArchivePath = ConfigurationManager.AppSettings("OutputArchive").Trim
+        cust.CSVPath = ConfigurationManager.AppSettings("CSVFile").Trim
+        cust.DataFolderPath = ConfigurationManager.AppSettings("DataFolderPath").Trim
+        cust.Engine = ConfigurationManager.AppSettings("Engine").Trim
+        cust.ErrorPath = ConfigurationManager.AppSettings("ExceptionFile").Trim
+        cust.CallLogic = ConfigurationManager.AppSettings("CallLogic").Trim
     End Sub
     Private Function NumberOfCallsWritten() As Integer
         Dim reportReader As StreamReader
+        Dim callfile As String = ConfigurationManager.AppSettings("CallListFile")
         Try
             Dim line As String
-            Dim writtenCounter As Integer
-            If File.Exists(ConfigurationManager.AppSettings("CallListFile")) Then
+            Dim writtenCounter As Integer = -1
+            If File.Exists(callfile) Then
                 'Count the number of lines in the Call List file
-                reportReader = New StreamReader(ConfigurationManager.AppSettings("CallListFile"))
+                reportReader = New StreamReader(callfile)
                 line = reportReader.ReadLine
                 Do While Not line Is Nothing
                     If line.Length > 0 Then
@@ -670,7 +651,7 @@ Public Class HMM_IVR_Console
                     End If
                     line = reportReader.ReadLine
                 Loop
-                Return writtenCounter - 2
+                Return writtenCounter
             Else
                 Return 0
             End If
@@ -683,34 +664,6 @@ Public Class HMM_IVR_Console
             End If
         End Try
     End Function
-
-    Private Function NumberOfExceptionedRows() As Integer
-        Dim line As String
-        Dim writtenCounter As Integer
-        If File.Exists(ConfigurationManager.AppSettings("ExceptionFile")) Then
-            'Count the number of lines in the Call List file
-            Dim reportReader As New StreamReader(ConfigurationManager.AppSettings("ExceptionFile"))
-            line = reportReader.ReadLine
-            Do While Not line Is Nothing
-                If line.Length > 0 Then
-                    writtenCounter += 1
-                End If
-                line = reportReader.ReadLine
-            Loop
-            Return writtenCounter - 4
-        Else
-            Return 0
-        End If
-    End Function
-
-    Private Sub LaunchExceptionReportAndCallList()
-        If Me.NumberOfCallsWritten > 0 Then
-            Shell("notepad " & ConfigurationManager.AppSettings("CallListFile").ToString(), AppWinStyle.NormalFocus)
-        End If
-        If Me.NumberOfExceptionedRows > 0 Then
-            Shell("notepad " & ConfigurationManager.AppSettings("ExceptionFile").ToString(), AppWinStyle.NormalFocus)
-        End If
-    End Sub
 
     Private Sub btnAddNew_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddNew.Click
         Dim max As Integer
@@ -763,10 +716,9 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
-        Dim meetingTypeArray(CType(ConfigurationManager.AppSettings("MeetingSkipTypeTotal"), Integer)) As String
         Dim useCSV As Boolean
         Dim scheduledDaysPrior, x As Integer
-
+        cust = New Customer
         cursor.Current() = System.Windows.Forms.Cursors.WaitCursor
         lblMsg.ForeColor = System.Drawing.Color.Black
         lblMsg.Text = ""
@@ -789,28 +741,11 @@ Public Class HMM_IVR_Console
         Else
             useCSV = False
         End If
-        'The scheduled days prior parameter must be a number and greater than 0
-        If Trim(txtScheduledDaysPrior.Text) <> "" Then
-            Try
-                scheduledDaysPrior = CType(txtScheduledDaysPrior.Text, Integer)
-                If scheduledDaysPrior > 0 Then
-                    'do nothing
-                Else
-                    lblMsg.ForeColor = System.Drawing.Color.Red
-                    lblMsg.Text = "The value for scheduled days prior is not valid.  It must be a number greater than 1.  If you do not want the number of days the appointment was scheduled prior to the appointment date included in the IVR criteria then leave the textbox blank."
-                    Exit Sub
-                End If
-            Catch ex As Exception
-                lblMsg.ForeColor = System.Drawing.Color.Red
-                lblMsg.Text = "The value for scheduled days prior is not valid.  It must be a number greater than 1.  If you do not want the number of days the appointment was scheduled prior to the appointment date included in the IVR criteria then leave the textbox blank."
-                Exit Sub
-            End Try
-        End If
-
+    
         'Build array of values from ListBox
         x = 0
         Do Until x = ListBox1.Items.Count
-            meetingTypeArray(x) = ListBox1.Items.Item(x)
+            cust.meetingTypeArray.Add(ListBox1.Items.Item(x))
             x += 1
         Loop
 
@@ -820,12 +755,15 @@ Public Class HMM_IVR_Console
             lblMsg.Text = ex.Message
             Exit Sub
         End Try
+        output = New OutputResults
+        output = export.Main(cust)
 
-        lblMsg.Text = export.Main(meetingTypeArray)
+        lblMsg.Text = output.Msg
 
-        If lblMsg.Text.EndsWith("-") Then
+        If Not output.FatalError Then
             lblMsg.ForeColor = System.Drawing.Color.Black
-            Me.LaunchExceptionReportAndCallList()
+            If output.CallsCount > 0 Then Shell("notepad " & output.CallListPath, AppWinStyle.NormalFocus)
+            If output.ExceptionCount > 0 Then Shell("notepad " & cust.ErrorPath, AppWinStyle.NormalFocus)
         Else
             lblMsg.ForeColor = System.Drawing.Color.Red
         End If
@@ -861,5 +799,4 @@ Public Class HMM_IVR_Console
         End If
     End Sub
 
-   
 End Class
