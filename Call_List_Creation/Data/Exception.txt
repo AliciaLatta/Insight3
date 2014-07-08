@@ -1,8 +1,12 @@
+ 
 ****************************************************************************************************
-* Run Date: Tuesday, July 01, 2014 10:50 AM
+* Run Date: Tuesday, July 08, 2014 12:06 PM
 ****************************************************************************************************
-
-UNABLE to TEXT NICHOLAS CLAEYS as mobile number is missing.  Voice call will be made to (949) 223-5605 (HOME) instead.
-------------------------------------------------------------------------------------------------------------------------------
-
-Rows Written: 2
+ 
+NO CALL will be made to  MEETING as a valid number does not exist.
+UNABLE to TEXT ANDREA WOLFF as mobile number is missing.  Voice call will be made to (425) 677-7444 (HOME) instead.
+NO CALL will be made to  MEETING as a valid number does not exist.
+NO CALL will be made to  BLOCK OUT as a valid number does not exist.
+NO CALL will be made to  BLOCK OUT as a valid number does not exist.
+ 
+Rows Written: 58

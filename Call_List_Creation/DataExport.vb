@@ -4,7 +4,7 @@ Imports System.IO
 Imports Rebex.Net
 Imports Microsoft.VisualBasic.FileIO
 Imports System.Collections.Generic
-
+Imports Microsoft.VisualBasic.FileIO.TextFieldParser
 '=================================================================================================
 'Class Name:	DataExport
 'Description:	Holds functions used to parse a report and create a formatted data file.
@@ -12,11 +12,12 @@ Imports System.Collections.Generic
 '=================================================================================================
 Public Class DataExport
 #Region "Enums"
-    Friend Enum ProcessingStatus
+    Public Enum ProcessingStatus
         SuccessfulRow
         ErroredRow
         SkippedRow
         WrittenRow
+        InProcessRow
     End Enum
    
     Private Enum LogicType
@@ -43,7 +44,8 @@ Public Class DataExport
     Private Const problemReadingReportXLS As String = "There is a problem with the columns in the Insight Report tab delimited file.  Please check that they all exist."
     Dim ReportFile As FileInfo
     Dim outputReader As StreamReader
-    Dim exceptions As ArrayList
+    'Dim exceptions As New List(Of ProcessedRow)
+    Dim exceptionLog As New ArrayList
     Dim callRows As New ArrayList()
     Shared meetingType As String
     Shared msg As String = String.Empty
@@ -62,10 +64,11 @@ Public Class DataExport
         Try
             ProcessTransactions(cust)
             exceptionWriter = New StreamWriter(cust.ErrorPath, False)
-            For Each row As String In exceptions
+           
+            For Each row As String In exceptionLog
                 exceptionWriter.WriteLine(row)
             Next
-            output.ExceptionCount = exceptions.Count
+            output.ExceptionCount = exceptionLog.Count
             Return output
         Catch ex As Exception
         Finally
@@ -136,12 +139,11 @@ Public Class DataExport
         Dim xlsReader As StreamReader
         Dim dt As DataTable
         Try
-            exceptions = New ArrayList()
-            'Write out a header in the file to separate runs
-            exceptions.Add(New String("*", 100))
-            exceptions.Add("* Run Date: " & Date.Now.ToString("f"))
-            exceptions.Add(New String("*", 100))
-            exceptions.Add("")
+            exceptionLog.Add(" ")
+            exceptionLog.Add(New String("*", 100))
+            exceptionLog.Add("* Run Date: " & Date.Now.ToString("f"))
+            exceptionLog.Add(New String("*", 100))
+            exceptionLog.Add(" ")
 
             '    Dim reportFilePath As String = ConfigurationManager.AppSettings("ReportFile")
             If File.Exists(cust.ReportPath) Then
@@ -164,17 +166,19 @@ Public Class DataExport
                     End If
                     Exit Sub
                 End Try
-
+                Dim pr1 As ProcessedRow
                 For Each row As DataRow In dt.Rows
                     cust.RowCount = (cust.RowCount + 1)
                     If cust.RowCount > 1 Then
-                        Select Case ProcessRow(row, cust)
+                        pr1 = ProcessRow(row, cust)
+                        Select Case pr1.Type
                             Case ProcessingStatus.SuccessfulRow
                                 cust.ProcessedCount += 1
                             Case ProcessingStatus.SkippedRow
+                                If pr1.Msg <> String.Empty Then exceptionLog.Add(pr1.Msg)
                                 cust.SkippedCount += 1
                             Case ProcessingStatus.ErroredRow
-                                UpdateResults(ProcessError, False)
+                                UpdateResults(pr1.Msg, False)
                                 output.FatalError = True
                                 Exit Sub
                             Case ProcessingStatus.WrittenRow
@@ -214,7 +218,7 @@ Public Class DataExport
                         Catch ex As Exception
                             'Handle argument out-of-range exception
                         End Try
-                     
+
                     Next
                     If Not dup Then allrows.Add(row)
                     dup = False
@@ -244,8 +248,8 @@ Public Class DataExport
                     Exit Sub
                 End Try
                 output.CallsCount = callRows.Count - 2
-                exceptions.Add("")
-                exceptions.Add("Rows Written: " & output.CallsCount)
+                exceptionLog.Add(" ") 
+                exceptionLog.Add("Rows Written: " & output.CallsCount)
                 'Need to subtract the last line (*EOF*) from the count
                 'Write out the processing results to the screen
                 UpdateResults(New String("-", 100), False)
@@ -259,7 +263,7 @@ Public Class DataExport
                 UpdateResults(New String("-", 100), False)
             Else
                 'Write a line to the log file to indicate that the input file did not exist
-                exceptions.Add("Input File: " & cust.ReportPath & " does not exist.")
+               exceptionLog.Add("Input File: " & cust.ReportPath & " does not exist.")
                 ''Let user know that input file does not exist
                 UpdateResults("Input File: " & cust.ReportPath & " does not exist.", True)
             End If
@@ -289,10 +293,10 @@ Public Class DataExport
         xDoc.Save(path)
     End Sub
 
-    Private Function ProcessRow(ByVal row As DataRow, ByVal cust As Customer) As ProcessingStatus
+    Private Function ProcessRow(ByVal row As DataRow, ByVal cust As Customer) As ProcessedRow
         Dim InsightProviderID, IVRProviderID As String
         Dim apptDate As Date
-
+        Dim retval As New ProcessedRow()
         apptDate = Convert.ToDateTime(row(8).ToString.Trim)
 
         If row(10).ToString.Trim = "12:00n" Then
@@ -306,33 +310,56 @@ Public Class DataExport
             gCallDate = callDate.ToString("yyyyMMdd")
 
             If callDate < Today Then
-                _error = invalidCallTime
-                Return ProcessingStatus.ErroredRow
+                retval.Msg = invalidCallTime
+                retval.Type = ProcessingStatus.ErroredRow
+                Return retval
             End If
         End If
 
         meetingType = row(9).ToString.Trim
 
-        If DetermineMeeting(meetingType, cust.meetingTypeArray) Then Return ProcessingStatus.SkippedRow 'Meeting type should be skipped
+        If DetermineMeeting(meetingType, cust.meetingTypeArray) Then
+            retval.Msg = String.Empty
+            retval.Type = ProcessingStatus.SkippedRow
+            Return retval 'Meeting type should be skipped
+        End If
 
         InsightProviderID = row(6).ToString.Trim
 
         Try
             If cust.UseCSV Then
                 If Not GetProviderID_FromCSV(IVRProviderID, InsightProviderID, cust) Then
-                    Return ProcessingStatus.ErroredRow
+                    retval.Msg = String.Empty
+                    retval.Type = ProcessingStatus.SkippedRow
+                    Return retval
                 End If
             Else
-                If Not GetProviderID_FromConfig(IVRProviderID, InsightProviderID) Then
-                    Return ProcessingStatus.ErroredRow
-                End If
+                Dim providerIDs As Array
+                Dim reader As New StreamReader("..\ProviderList.txt")
+                Dim line As String
+
+                Do Until reader.EndOfStream
+                    line = reader.ReadLine
+                    providerIDs = Split(line, ",")
+                    If providerIDs(1).ToString().Contains(InsightProviderID) Then
+                        IVRProviderID = providerIDs(0).ToString()
+                        Exit Do
+                    End If
+                Loop
             End If
         Catch ex As Exception
-            If _error = csvProviderProblem Then Throw ex
-            Return ProcessingStatus.ErroredRow
+            If _error = csvProviderProblem Then
+                Throw ex
+            End If
+            ' Return ProcessingStatus.ErroredRow
         End Try
 
-        If IVRProviderID Is Nothing Then Return ProcessingStatus.ErroredRow
+        If IVRProviderID Is Nothing Then
+            '  _error = csvProviderProblem
+            retval.Msg = String.Empty ' don't print as some doctors don't want calls made
+            retval.Type = ProcessingStatus.SkippedRow
+            Return retval
+        End If
 
         Try
             If cust.CallLogic = LogicType.AllBut Then
@@ -342,10 +369,12 @@ Public Class DataExport
             End If
         Catch ex As Exception
             Throw ex
-            Return ProcessingStatus.ErroredRow
+            ' Return ProcessingStatus.ErroredRow
         End Try
 
-        Return ProcessingStatus.SuccessfulRow
+        retval.Msg = String.Empty
+        retval.Type = ProcessingStatus.SuccessfulRow
+        Return retval
     End Function
 
     Public Class OutputResults
@@ -390,19 +419,7 @@ Public Class DataExport
             meetingTypeArray = New ArrayList
         End Sub
     End Class
-    Public Class CustomRow
-        Public Property data As String
-        Public Property duplicate As Boolean
-
-        Public Sub New()
-
-        End Sub
-
-        Public Sub New(ByVal data As String, ByVal duplicate As Boolean)
-            Me.data = data
-            Me.duplicate = duplicate
-        End Sub
-    End Class
+  
     Public Class Phone
         Public Property Type As String
         Public Property Number As String
@@ -415,6 +432,18 @@ Public Class DataExport
             Me.Type = Type
             Me.Number = Number
             Me.Status = Status
+        End Sub
+    End Class
+
+    Public Class ProcessedRow
+        Public Property Type As ProcessingStatus
+        Public Property Msg As String
+        Public Sub New()
+
+        End Sub
+        Public Sub New(ByVal msg As String, ByVal type As ProcessingStatus)
+            Me.Msg = msg
+            Me.Type = type
         End Sub
     End Class
 
@@ -483,9 +512,7 @@ Public Class DataExport
         Next
 
         If retval Is Nothing Then
-            msg = "NO CALL will be made to " & name & " as a valid number does not exist."
-            AddException(msg)
-            Return retval
+            exceptionLog.Add("NO CALL will be made to " & name & " as a valid number does not exist.")
         Else
             Dim ok As Boolean = False
             For Each phone As Phone In phones
@@ -495,9 +522,8 @@ Public Class DataExport
                     End If
                 End With
             Next
-            If Not ok Then
-                msg = "NO CALL will be made to " & name & " as a valid number does not exist."
-                AddException(msg)
+            If Not ok Then 
+                exceptionLog.Add("NO CALL will be made to " & name & " as a valid number does not exist.")
                 Return retval
             End If
         End If
@@ -514,30 +540,27 @@ Public Class DataExport
                 End With
             Next
             'If we get here, mobile number doesn't exist
-            msg = "UNABLE to TEXT " & name & " as mobile number is missing.  " & msg2
-            AddException(msg)
+            exceptionLog.Add("UNABLE to TEXT " & name & " as mobile number is missing.  " & msg2)
             Return retval
         Else 'They want to call home 
             msg2 = "Will use " & String.Format("{0:(###) ###-####}", Long.Parse(retval.Number)) & " (" & retval.Type & ") instead."
             For Each phone As Phone In phones
                 With phone
                     If .Type = "HOME" Then
-                        msg = "UNABLE to CALL " & .Type & " of " & name & " as " & .Type & " number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2
-                        AddException(msg)
+                        exceptionLog.Add("UNABLE to CALL " & .Type & " of " & name & " as " & .Type & " number is invalid:" & String.Format("{0:(###) ###-####}", Long.Parse(.Number)) & ".  " & msg2)
                         Return retval
                     End If
                 End With
             Next
             'If we get here, home number doesn't exist
-            msg = "UNABLE to CALL HOME of " & name & ";  " & msg2
-            AddException(msg)
+            exceptionLog.Add("UNABLE to CALL HOME of " & name & ";  " & msg2)
             Return retval
         End If
         'Return retval
     End Function
-    Private Sub AddException(ByVal msg As String)
-        exceptions.Add(msg)
-        exceptions.Add("------------------------------------------------------------------------------------------------------------------------------")
+    Private Sub AddException(ByVal msg As String) 
+        exceptionLog.Add(msg)
+        exceptionLog.Add("------------------------------------------------------------------------------------------------------------------------------")
     End Sub
     Private Sub WriteRecord(ByVal row As DataRow, ByVal providerID As String, ByVal apptDate As Date, ByVal cust As Customer)
         Dim privateIndicator, okayIndicator, spanishIndicator As Boolean
@@ -651,25 +674,25 @@ Public Class DataExport
         End Try
     End Function
 
-    Private Function GetProviderID_FromConfig(ByRef IVRProviderID As String, ByVal InsightProviderID As String) As Boolean
-        Dim z As Integer = 1
-        Dim done As Boolean = False
-        Do Until done = True Or z = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
-            IVRProviderID = "EngineProvider" & z
-            If ConfigurationManager.AppSettings(IVRProviderID).ToString().ToUpper = InsightProviderID.ToUpper Then
-                IVRProviderID = z
-                done = True
-            Else
-                z += 1
-            End If
-        Loop
-        If done Then
-            Return True
-        Else
-            _error = DataExport.providerIDNotFoundConfig
-        End If
-        Return False
-    End Function
+    'Private Function GetProviderID_FromConfig(ByRef IVRProviderID As String, ByVal InsightProviderID As String) As Boolean
+    '    Dim z As Integer = 1
+    '    Dim done As Boolean = False
+    '    Do Until done = True Or z = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
+    '        IVRProviderID = "EngineProvider" & z
+    '        If ConfigurationManager.AppSettings(IVRProviderID).ToString().ToUpper = InsightProviderID.ToUpper Then
+    '            IVRProviderID = z
+    '            done = True
+    '        Else
+    '            z += 1
+    '        End If
+    '    Loop
+    '    If done Then
+    '        Return True
+    '    Else
+    '        _error = DataExport.providerIDNotFoundConfig
+    '    End If
+    '    Return False
+    'End Function
 
     Private Function GetProviderID_FromCSV(ByRef IVRProviderID As String, ByVal InsightProviderID As String, ByVal cust As Customer) As Boolean
         '*****************************************************************************************************

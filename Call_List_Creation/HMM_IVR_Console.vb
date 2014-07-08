@@ -369,7 +369,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.2)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.3)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -395,12 +395,13 @@ Public Class HMM_IVR_Console
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "The config file must have an accurate value for MeetingSkipTypeTotal."
         End If
-        If Trim(ConfigurationManager.AppSettings("EngineProviderTotal").ToString) <> "" Then
-            BuildProviderListBox()
-        Else
-            lblMsg.ForeColor = System.Drawing.Color.Red
-            lblMsg.Text = "The config file must have an accurate value for EngineProviderTotal."
-        End If
+        'If Trim(ConfigurationManager.AppSettings("EngineProviderTotal").ToString) <> "" Then
+        '    BuildProviderListBox()
+        'Else
+        '    lblMsg.ForeColor = System.Drawing.Color.Red
+        '    lblMsg.Text = "The config file must have an accurate value for EngineProviderTotal."
+        'End If
+        BuildProviderListBox()
         txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
         lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("CSVFile").ToString).ToUpper
         Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString).ToUpper
@@ -445,31 +446,31 @@ Public Class HMM_IVR_Console
         End Try
     End Sub
     Private Sub BuildProviderListBox()
-        Dim y As Integer
-        Dim providerArray(CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)) As String
         Dim provider As String
-        y = 0
+        Dim providerIDs As Array
+        Dim reader As New StreamReader("..\ProviderList.txt")
+        Dim line As String
+      
         Try
-            Do Until y = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
-                provider = "EngineProvider" & (y + 1)
-                If Trim(ConfigurationManager.AppSettings(provider).ToString) <> "" Then
-                    providerArray(y) = Trim(ConfigurationManager.AppSettings(provider).ToString) & " = " & ConfigurationManager.AppSettings("Engine").ToString & " Provider ID " & (y + 1)
-                Else
-                    providerArray(y) = ""
-                End If
-                y += 1
+            'Do Until y = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
+            '    provider = "EngineProvider" & (y + 1)
+            '    If Trim(ConfigurationManager.AppSettings(provider).ToString) <> "" Then
+            '        providerIDs(y) = Trim(ConfigurationManager.AppSettings(provider).ToString) & " = " & ConfigurationManager.AppSettings("Engine").ToString & " Provider ID " & (y + 1)
+            '    Else
+            '        providerIDs(y) = ""
+            '    End If
+            '    y += 1
+            'Loop
+
+            Do Until reader.EndOfStream
+                line = reader.ReadLine
+                providerIDs = Split(line, ",")
+                ListBox2.Items.Add("Report Provider ID " & providerIDs(1))
             Loop
 
-            Dim x As Integer
-            Dim count As Integer
-            x = 0
-            count = 0
-            Do Until x = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
-                If providerArray(x).ToString() <> "" Then
-                    ListBox2.Items.Add("Report Provider ID " & providerArray(x))
-                End If
-                x += 1
-            Loop
+
+
+         
         Catch e As Exception
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "There was an error populating the Providers.  Please review the config file for the problem."
