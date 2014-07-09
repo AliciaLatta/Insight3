@@ -369,7 +369,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.3)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.4)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
