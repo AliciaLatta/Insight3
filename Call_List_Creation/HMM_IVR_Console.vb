@@ -406,9 +406,9 @@ Public Class HMM_IVR_Console
         lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("CSVFile").ToString).ToUpper
         Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString).ToUpper
         If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
-            lblCallLogic.Text = "Only home phone numbers ending in OK will be called"
+            lblCallLogic.Text = "Only numbers ending in OK will be called"
         ElseIf Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
-            lblCallLogic.Text = "Home phone numbers may be called unless they contain the letters 'PR'"
+            lblCallLogic.Text = "Patients will not receive a call if they have a PR in a patient class field."
         Else
             lblCallLogic.ForeColor = System.Drawing.Color.Red
             lblCallLogic.Text = "The value of CallLogic is not valid."
@@ -446,31 +446,18 @@ Public Class HMM_IVR_Console
         End Try
     End Sub
     Private Sub BuildProviderListBox()
-        Dim provider As String
         Dim providerIDs As Array
-        Dim reader As New StreamReader("..\ProviderList.txt")
+        Dim reader As StreamReader
         Dim line As String
-      
         Try
-            'Do Until y = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
-            '    provider = "EngineProvider" & (y + 1)
-            '    If Trim(ConfigurationManager.AppSettings(provider).ToString) <> "" Then
-            '        providerIDs(y) = Trim(ConfigurationManager.AppSettings(provider).ToString) & " = " & ConfigurationManager.AppSettings("Engine").ToString & " Provider ID " & (y + 1)
-            '    Else
-            '        providerIDs(y) = ""
-            '    End If
-            '    y += 1
-            'Loop
-
-            Do Until reader.EndOfStream
-                line = reader.ReadLine
-                providerIDs = Split(line, ",")
-                ListBox2.Items.Add("Report Provider ID " & providerIDs(1))
-            Loop
-
-
-
-         
+            If File.Exists("..\ProviderList.txt") Then
+                reader = New StreamReader("..\ProviderList.txt")
+                Do Until reader.EndOfStream
+                    line = reader.ReadLine
+                    providerIDs = Split(line, ",")
+                    ListBox2.Items.Add("Report Provider ID " & providerIDs(1))
+                Loop
+            End If
         Catch e As Exception
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "There was an error populating the Providers.  Please review the config file for the problem."

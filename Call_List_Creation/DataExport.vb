@@ -133,19 +133,13 @@ Public Class DataExport
         'Dim skipCounter As Integer
         'Dim processedCounter As Integer
         Dim splitout As Array
-        Dim x As Integer
-        Dim y As Integer
+        Dim x, y As Integer
         Dim exists As Boolean
         Dim xlsReader As StreamReader
         Dim dt As DataTable
         Try
-            exceptionLog.Add(" ")
-            exceptionLog.Add(New String("*", 100))
-            exceptionLog.Add("* Run Date: " & Date.Now.ToString("f"))
-            exceptionLog.Add(New String("*", 100))
-            exceptionLog.Add(" ")
+            exceptionLog.Add(" " & vbCrLf & New String("*", 100) & vbCrLf & "* Run Date: " & Date.Now.ToString("f") & vbCrLf & New String("*", 100) & vbCrLf & " ")
 
-            '    Dim reportFilePath As String = ConfigurationManager.AppSettings("ReportFile")
             If File.Exists(cust.ReportPath) Then
                 ReportFile = New FileInfo(cust.ReportPath)
                 If ReportFile.LastWriteTime < Date.Now.AddHours(-8) Then
@@ -248,7 +242,7 @@ Public Class DataExport
                     Exit Sub
                 End Try
                 output.CallsCount = callRows.Count - 2
-                exceptionLog.Add(" ") 
+                exceptionLog.Add(" ")
                 exceptionLog.Add("Rows Written: " & output.CallsCount)
                 'Need to subtract the last line (*EOF*) from the count
                 'Write out the processing results to the screen
@@ -263,7 +257,7 @@ Public Class DataExport
                 UpdateResults(New String("-", 100), False)
             Else
                 'Write a line to the log file to indicate that the input file did not exist
-               exceptionLog.Add("Input File: " & cust.ReportPath & " does not exist.")
+                exceptionLog.Add("Input File: " & cust.ReportPath & " does not exist.")
                 ''Let user know that input file does not exist
                 UpdateResults("Input File: " & cust.ReportPath & " does not exist.", True)
             End If
@@ -351,7 +345,6 @@ Public Class DataExport
             If _error = csvProviderProblem Then
                 Throw ex
             End If
-            ' Return ProcessingStatus.ErroredRow
         End Try
 
         If IVRProviderID Is Nothing Then
