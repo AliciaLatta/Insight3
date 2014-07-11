@@ -208,9 +208,9 @@ Public Class HMM_IVR_Console
         '
         Me.lblMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMsg.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblMsg.Location = New System.Drawing.Point(7, 429)
+        Me.lblMsg.Location = New System.Drawing.Point(7, 453)
         Me.lblMsg.Name = "lblMsg"
-        Me.lblMsg.Size = New System.Drawing.Size(656, 122)
+        Me.lblMsg.Size = New System.Drawing.Size(656, 99)
         Me.lblMsg.TabIndex = 115
         Me.lblMsg.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -218,7 +218,7 @@ Public Class HMM_IVR_Console
         '
         Me.btnFTP.BackColor = System.Drawing.Color.White
         Me.btnFTP.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFTP.Location = New System.Drawing.Point(303, 392)
+        Me.btnFTP.Location = New System.Drawing.Point(303, 414)
         Me.btnFTP.Name = "btnFTP"
         Me.btnFTP.Size = New System.Drawing.Size(222, 27)
         Me.btnFTP.TabIndex = 114
@@ -229,7 +229,7 @@ Public Class HMM_IVR_Console
         '
         Me.btnCreateFile.BackColor = System.Drawing.Color.White
         Me.btnCreateFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCreateFile.Location = New System.Drawing.Point(85, 392)
+        Me.btnCreateFile.Location = New System.Drawing.Point(85, 414)
         Me.btnCreateFile.Name = "btnCreateFile"
         Me.btnCreateFile.Size = New System.Drawing.Size(138, 27)
         Me.btnCreateFile.TabIndex = 113
@@ -279,7 +279,7 @@ Public Class HMM_IVR_Console
         Me.lblCSVFile.ForeColor = System.Drawing.SystemColors.ActiveCaption
         Me.lblCSVFile.Location = New System.Drawing.Point(212, 327)
         Me.lblCSVFile.Name = "lblCSVFile"
-        Me.lblCSVFile.Size = New System.Drawing.Size(402, 23)
+        Me.lblCSVFile.Size = New System.Drawing.Size(402, 39)
         Me.lblCSVFile.TabIndex = 118
         '
         'Label17
@@ -311,7 +311,7 @@ Public Class HMM_IVR_Console
         'Label1
         '
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(82, 365)
+        Me.Label1.Location = New System.Drawing.Point(82, 380)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(85, 23)
         Me.Label1.TabIndex = 124
@@ -321,15 +321,15 @@ Public Class HMM_IVR_Console
         '
         Me.lblInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblInsightReport.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblInsightReport.Location = New System.Drawing.Point(213, 360)
+        Me.lblInsightReport.Location = New System.Drawing.Point(213, 374)
         Me.lblInsightReport.Name = "lblInsightReport"
-        Me.lblInsightReport.Size = New System.Drawing.Size(402, 23)
+        Me.lblInsightReport.Size = New System.Drawing.Size(402, 37)
         Me.lblInsightReport.TabIndex = 123
         '
         'ChooseInsightReport
         '
         Me.ChooseInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChooseInsightReport.Location = New System.Drawing.Point(173, 360)
+        Me.ChooseInsightReport.Location = New System.Drawing.Point(173, 375)
         Me.ChooseInsightReport.Name = "ChooseInsightReport"
         Me.ChooseInsightReport.Size = New System.Drawing.Size(34, 23)
         Me.ChooseInsightReport.TabIndex = 122
@@ -369,18 +369,18 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.4)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.5)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
 #End Region
-    Dim configPath As String
+    '  Dim configPath As String
     Dim cust As Customer
     Dim output As OutputResults
     Private Sub HMM_IVR_Console_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
+        '   configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
         GetConfigValues()
         If ConfigurationManager.AppSettings("UseCSV").ToUpper = "TRUE" Then
             chkUseCSV.Checked = True
@@ -395,16 +395,12 @@ Public Class HMM_IVR_Console
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "The config file must have an accurate value for MeetingSkipTypeTotal."
         End If
-        'If Trim(ConfigurationManager.AppSettings("EngineProviderTotal").ToString) <> "" Then
-        '    BuildProviderListBox()
-        'Else
-        '    lblMsg.ForeColor = System.Drawing.Color.Red
-        '    lblMsg.Text = "The config file must have an accurate value for EngineProviderTotal."
-        'End If
+       
         BuildProviderListBox()
+
         txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
-        lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("CSVFile").ToString).ToUpper
-        Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString).ToUpper
+        lblCSVFile.Text = GetCurrentDirectory & "\" & Trim(ConfigurationManager.AppSettings("CSVFileName").ToString).ToUpper
+        Me.lblInsightReport.Text = GetCurrentDirectory & "\" & Trim(ConfigurationManager.AppSettings("ReportFileName").ToString).ToUpper
         If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
             lblCallLogic.Text = "Only numbers ending in OK will be called"
         ElseIf Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
@@ -484,7 +480,7 @@ Public Class HMM_IVR_Console
         Dim host As String = ConfigurationManager.AppSettings("Server").ToString
         Dim username As String = ConfigurationManager.AppSettings("Username").ToString
         Dim password As String = ConfigurationManager.AppSettings("Password").ToString
-        Dim callList As String = ConfigurationManager.AppSettings("CallListFile").ToString
+        Dim callList As String = GetCurrentDirectory() & "\" & ConfigurationManager.AppSettings("CallListFileName").ToString
         Dim URI As String
         Dim ftp As System.Net.FtpWebRequest
 
@@ -514,7 +510,7 @@ Public Class HMM_IVR_Console
             clsStream.Dispose()
 
             'Archive
-            Dim archive As String = ConfigurationManager.AppSettings("OutputArchive") & My.Computer.FileSystem.GetFileInfo(callList).Name
+            Dim archive As String = GetCurrentDirectory & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
             If My.Computer.FileSystem.FileExists(archive) Then
                 My.Computer.FileSystem.DeleteFile(archive)
             End If
@@ -535,7 +531,7 @@ Public Class HMM_IVR_Console
             _ftp.Login(ConfigurationManager.AppSettings("Username").ToString, _
                                 ConfigurationManager.AppSettings("Password").ToString)
             _ftp.SetTransferType(_ftp.TransferType.Ascii)
-            _ftp.PutFile(ConfigurationManager.AppSettings("CallListFile").ToString, _
+            _ftp.PutFile(GetCurrentDirectory & "/" & ConfigurationManager.AppSettings("CallListFileName").ToString, _
                                 ConfigurationManager.AppSettings("RemotePath").ToString)
             _ftp.Disconnect()
             _ftp = Nothing
@@ -590,6 +586,8 @@ Public Class HMM_IVR_Console
         form.BringToFront()
     End Sub
     Private Sub Save()
+        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
+        Dim configPath As String = path(0)
         ReplaceConfigSettings(configPath, "CustId", txtCustID.Text)
         ReplaceConfigSettings(configPath, "DefaultAreaCode", txtAreaCode.Text)
         ReplaceConfigSettings(configPath, "UseCSV", chkUseCSV.Checked)
@@ -616,16 +614,15 @@ Public Class HMM_IVR_Console
         cust.AreaCode = txtAreaCode.Text.Trim
         cust.UseCSV = chkUseCSV.Checked
         cust.ReportPath = lblInsightReport.Text.Trim
-        cust.ArchivePath = ConfigurationManager.AppSettings("OutputArchive").Trim
-        cust.CSVPath = ConfigurationManager.AppSettings("CSVFile").Trim
-        cust.DataFolderPath = ConfigurationManager.AppSettings("DataFolderPath").Trim
+        cust.ArchivePath = GetCurrentDirectory & "\" & "Archive"
+        cust.CSVPath = GetCurrentDirectory & "\" & ConfigurationManager.AppSettings("CSVFileName").Trim
         cust.Engine = ConfigurationManager.AppSettings("Engine").Trim
-        cust.ErrorPath = ConfigurationManager.AppSettings("ExceptionFile").Trim
+        cust.ErrorPath = GetCurrentDirectory & "Exception.txt"
         cust.CallLogic = ConfigurationManager.AppSettings("CallLogic").Trim
     End Sub
     Private Function NumberOfCallsWritten() As Integer
         Dim reportReader As StreamReader
-        Dim callfile As String = ConfigurationManager.AppSettings("CallListFile")
+        Dim callfile As String = GetCurrentDirectory & "\" & ConfigurationManager.AppSettings("CallListFileName")
         Try
             Dim line As String
             Dim writtenCounter As Integer = -1

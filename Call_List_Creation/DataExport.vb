@@ -1,10 +1,12 @@
 
 Imports System.Configuration
 Imports System.IO
+Imports Microsoft.VisualBasic
 Imports Rebex.Net
 Imports Microsoft.VisualBasic.FileIO
 Imports System.Collections.Generic
 Imports Microsoft.VisualBasic.FileIO.TextFieldParser
+Imports System.Runtime.CompilerServices
 '=================================================================================================
 'Class Name:	DataExport
 'Description:	Holds functions used to parse a report and create a formatted data file.
@@ -223,7 +225,7 @@ Public Class DataExport
                 Dim callsWriter As StreamWriter
                 Try
                     'This is where we will open and write the call list
-                    callList = cust.DataFolderPath & "CallList" & cust.ClinicName & "_" & gCallDate & "-" & cust.ID & ".csv"
+                    callList = GetCurrentDirectory() & "\" & "CallList" & cust.ClinicName & "_" & gCallDate & "-" & cust.ID & ".csv"
                     ReplaceConfigSettings("CallListFile", callList)
                     If My.Computer.FileSystem.FileExists(callList) Then
                         My.Computer.FileSystem.DeleteFile(callList)
@@ -253,7 +255,7 @@ Public Class DataExport
                 UpdateResults(vbCrLf & "Rows Written: " & output.CallsCount & vbCrLf & vbCrLf, False)
                 UpdateResults("Call list created in ", False)
 
-                UpdateResults(callList & vbCrLf, False)
+                UpdateResults(GetCurrentDirectory() & "/" & callList & vbCrLf, False)
                 UpdateResults(New String("-", 100), False)
             Else
                 'Write a line to the log file to indicate that the input file did not exist
@@ -273,9 +275,8 @@ Public Class DataExport
     Private Sub ReplaceConfigSettings(ByVal key As String, ByVal val As String)
         Dim xDoc As New Xml.XmlDataDocument
         Dim xNode As Xml.XmlNode
-        Dim path As String = ConfigurationManager.AppSettings("AppConfigPath").ToString
-        xDoc.Load(path)
-        'For Each xNode In xDoc 
+        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
+        xDoc.Load(path(0)) 
         For Each xNode In xDoc("configuration")("appSettings")
             If (xNode.Name = "add") Then
                 If (xNode.Attributes.GetNamedItem("key").Value = key) Then
@@ -284,9 +285,16 @@ Public Class DataExport
                 End If
             End If
         Next
-        xDoc.Save(path)
+        xDoc.Save(path(0))
     End Sub
-
+    Public Shared Function GetCurrentDirectory() As String
+        Dim retval As String
+        retval = Directory.GetCurrentDirectory
+        If retval.Contains("bin") Then
+            retval = retval.Substring(0, retval.Length - 4)
+        End If
+        Return retval
+    End Function
     Private Function ProcessRow(ByVal row As DataRow, ByVal cust As Customer) As ProcessedRow
         Dim InsightProviderID, IVRProviderID As String
         Dim apptDate As Date
@@ -383,7 +391,7 @@ Public Class DataExport
         Public Property ErrorPath As String
         Public Property ReportPath As String
         Public Property CSVPath As String
-        Public Property DataFolderPath As String
+        '  Public Property DataFolderPath As String
         Public Property Engine As String
         Public Property AreaCode As String
         Public Property DaysPrior As Integer
@@ -835,6 +843,4 @@ Public Class DataExport
             Return _error
         End Get
     End Property
-
-
 End Class
