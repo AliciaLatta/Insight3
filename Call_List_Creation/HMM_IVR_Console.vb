@@ -369,7 +369,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.5)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.6)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -460,10 +460,11 @@ Public Class HMM_IVR_Console
         End Try
     End Sub
 
-    Private Sub ReplaceConfigSettings(ByVal FName As String, ByVal key As String, ByVal val As String)
+    Private Sub ReplaceConfigSettings(ByVal key As String, ByVal val As String)
         Dim xDoc As New Xml.XmlDataDocument
         Dim xNode As Xml.XmlNode
-        xDoc.Load(FName)
+        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
+        xDoc.Load(path(0))
         'For Each xNode In xDoc 
         For Each xNode In xDoc("configuration")("appSettings")
             If (xNode.Name = "add") Then
@@ -473,7 +474,7 @@ Public Class HMM_IVR_Console
                 End If
             End If
         Next
-        xDoc.Save(FName)
+        xDoc.Save(path(0))
     End Sub
 
     Private Sub FTP()
@@ -586,26 +587,23 @@ Public Class HMM_IVR_Console
         form.BringToFront()
     End Sub
     Private Sub Save()
-        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
-        Dim configPath As String = path(0)
-        ReplaceConfigSettings(configPath, "CustId", txtCustID.Text)
-        ReplaceConfigSettings(configPath, "DefaultAreaCode", txtAreaCode.Text)
-        ReplaceConfigSettings(configPath, "UseCSV", chkUseCSV.Checked)
-        ReplaceConfigSettings(configPath, "CSVFile", lblCSVFile.Text)
-        ReplaceConfigSettings(configPath, "ReportFile", Me.lblInsightReport.Text)
-        ReplaceConfigSettings(configPath, "CustID", txtCustID.Text)
+        ReplaceConfigSettings("CustId", txtCustID.Text)
+        ReplaceConfigSettings("DefaultAreaCode", txtAreaCode.Text)
+        ReplaceConfigSettings("UseCSV", chkUseCSV.Checked)
+        ReplaceConfigSettings("CSVFileName", lblCSVFile.Text.Trim.Substring(lblCSVFile.Text.Trim.LastIndexOf("\") + 1))
+        ReplaceConfigSettings("ReportFileName", Me.lblInsightReport.Text.Trim.Substring(lblInsightReport.Text.Trim.LastIndexOf("\") + 1))
         'Save ListBox of meeting types to skip
         Dim x As Integer
         Dim meetingType As String
         x = 0
         Do Until x = ListBox1.Items.Count
             meetingType = "MeetingSkipType" & (x + 1)
-            ReplaceConfigSettings(configPath, meetingType, CType(ListBox1.Items.Item(x), String).ToString())
+            ReplaceConfigSettings(meetingType, CType(ListBox1.Items.Item(x), String).ToString())
             x += 1
         Loop
         Do Until x = ListBox1.Items.Count
             meetingType = "MeetingSkipType" & (x + 1)
-            ReplaceConfigSettings(configPath, meetingType, "")
+            ReplaceConfigSettings(meetingType, "")
             x += 1
         Loop
         cust.ID = txtCustID.Text.Trim
@@ -614,10 +612,10 @@ Public Class HMM_IVR_Console
         cust.AreaCode = txtAreaCode.Text.Trim
         cust.UseCSV = chkUseCSV.Checked
         cust.ReportPath = lblInsightReport.Text.Trim
-        cust.ArchivePath = GetCurrentDirectory & "\" & "Archive"
-        cust.CSVPath = GetCurrentDirectory & "\" & ConfigurationManager.AppSettings("CSVFileName").Trim
+        cust.ArchivePath = GetCurrentDirectory() & "\Archive"
+        cust.CSVPath = lblCSVFile.Text.Trim
         cust.Engine = ConfigurationManager.AppSettings("Engine").Trim
-        cust.ErrorPath = GetCurrentDirectory & "Exception.txt"
+        cust.ErrorPath = GetCurrentDirectory() & "\Exception.txt"
         cust.CallLogic = ConfigurationManager.AppSettings("CallLogic").Trim
     End Sub
     Private Function NumberOfCallsWritten() As Integer
@@ -693,7 +691,7 @@ Public Class HMM_IVR_Console
 
         fDialog.Title = "Get Provider List in CSV Format"
         '   fDialog.Filter = "CSV Files|*.csv"
-        '  fDialog.InitialDirectory = "C:\"
+        fDialog.InitialDirectory = Directory.GetCurrentDirectory
 
         If fDialog.ShowDialog() = DialogResult.OK Then
             lblCSVFile.Text = fDialog.FileName.ToString()
@@ -702,7 +700,7 @@ Public Class HMM_IVR_Console
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
         Dim useCSV As Boolean
-        Dim scheduledDaysPrior, x As Integer
+        Dim x As Integer
         cust = New Customer
         cursor.Current() = System.Windows.Forms.Cursors.WaitCursor
         lblMsg.ForeColor = System.Drawing.Color.Black
@@ -777,7 +775,7 @@ Public Class HMM_IVR_Console
 
         fDialog.Title = "Get Report in Tab Delimited Format"
         '     fDialog.Filter = "Tab Delimited Files|*.txt"
-        '    fDialog.InitialDirectory = "C:\"
+        fDialog.InitialDirectory = Directory.GetCurrentDirectory
 
         If fDialog.ShowDialog() = DialogResult.OK Then
             Me.lblInsightReport.Text = fDialog.FileName.ToString()

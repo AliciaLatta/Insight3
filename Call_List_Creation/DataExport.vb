@@ -255,7 +255,7 @@ Public Class DataExport
                 UpdateResults(vbCrLf & "Rows Written: " & output.CallsCount & vbCrLf & vbCrLf, False)
                 UpdateResults("Call list created in ", False)
 
-                UpdateResults(GetCurrentDirectory() & "/" & callList & vbCrLf, False)
+                UpdateResults(callList & vbCrLf, False)
                 UpdateResults(New String("-", 100), False)
             Else
                 'Write a line to the log file to indicate that the input file did not exist
