@@ -369,7 +369,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.6)"
+        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.7)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -400,7 +400,7 @@ Public Class HMM_IVR_Console
 
         txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
         lblCSVFile.Text = GetCurrentDirectory & "\" & Trim(ConfigurationManager.AppSettings("CSVFileName").ToString).ToUpper
-        Me.lblInsightReport.Text = GetCurrentDirectory & "\" & Trim(ConfigurationManager.AppSettings("ReportFileName").ToString).ToUpper
+        Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFilePath").ToString).ToUpper
         If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
             lblCallLogic.Text = "Only numbers ending in OK will be called"
         ElseIf Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
@@ -511,7 +511,11 @@ Public Class HMM_IVR_Console
             clsStream.Dispose()
 
             'Archive
-            Dim archive As String = GetCurrentDirectory & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
+            'Create archive folder if it doesn't already exist
+            If Not My.Computer.FileSystem.DirectoryExists(GetCurrentDirectory() & "\Archive") Then
+                My.Computer.FileSystem.CreateDirectory(GetCurrentDirectory() & "\Archive")
+            End If
+            Dim archive As String = GetCurrentDirectory() & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
             If My.Computer.FileSystem.FileExists(archive) Then
                 My.Computer.FileSystem.DeleteFile(archive)
             End If
@@ -522,34 +526,7 @@ Public Class HMM_IVR_Console
             Throw ex
         End Try
     End Sub
-    Private Sub RebexFTP()
-        Dim _ftp As New Rebex.Net.Ftp
-        Try
-            Dim cursor As System.Windows.Forms.Cursor
-            cursor.Current = System.Windows.Forms.Cursors.WaitCursor
-            _ftp.Connect(ConfigurationManager.AppSettings("Server").ToString, _
-                                ConfigurationManager.AppSettings("Port").ToString)
-            _ftp.Login(ConfigurationManager.AppSettings("Username").ToString, _
-                                ConfigurationManager.AppSettings("Password").ToString)
-            _ftp.SetTransferType(_ftp.TransferType.Ascii)
-            _ftp.PutFile(GetCurrentDirectory & "/" & ConfigurationManager.AppSettings("CallListFileName").ToString, _
-                                ConfigurationManager.AppSettings("RemotePath").ToString)
-            _ftp.Disconnect()
-            _ftp = Nothing
-            cursor = Nothing
-        Catch ex As Exception
-            lblMsg.Text = ex.Message
-            Exit Sub
-        End Try
-
-        Dim form As FileParse
-        form = New FileParse
-        form.Show()
-        form.BringToFront()
-
-        lblMsg.Text = "Call List Uploaded to IVR Server."
-    End Sub
-
+   
     Private Sub btnDeleteType_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDeleteType.Click
         If ListBox1.Items.Count <> 0 And ListBox1.SelectedIndex <> -1 Then
             ListBox1.Items.RemoveAt(ListBox1.SelectedIndex)
@@ -591,7 +568,7 @@ Public Class HMM_IVR_Console
         ReplaceConfigSettings("DefaultAreaCode", txtAreaCode.Text)
         ReplaceConfigSettings("UseCSV", chkUseCSV.Checked)
         ReplaceConfigSettings("CSVFileName", lblCSVFile.Text.Trim.Substring(lblCSVFile.Text.Trim.LastIndexOf("\") + 1))
-        ReplaceConfigSettings("ReportFileName", Me.lblInsightReport.Text.Trim.Substring(lblInsightReport.Text.Trim.LastIndexOf("\") + 1))
+        ReplaceConfigSettings("ReportFilePath", Me.lblInsightReport.Text.Trim)
         'Save ListBox of meeting types to skip
         Dim x As Integer
         Dim meetingType As String
@@ -775,7 +752,7 @@ Public Class HMM_IVR_Console
 
         fDialog.Title = "Get Report in Tab Delimited Format"
         '     fDialog.Filter = "Tab Delimited Files|*.txt"
-        fDialog.InitialDirectory = Directory.GetCurrentDirectory
+        ' fDialog.InitialDirectory = Directory.GetCurrentDirectory
 
         If fDialog.ShowDialog() = DialogResult.OK Then
             Me.lblInsightReport.Text = fDialog.FileName.ToString()
