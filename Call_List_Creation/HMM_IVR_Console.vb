@@ -335,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Call List Creation Tool (Version 7.3.95)"
+        Me.Text = "Call List Creation Tool (Version 7.3.96)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -441,10 +441,8 @@ Public Class HMM_IVR_Console
             If Not My.Computer.FileSystem.DirectoryExists(Directory.GetCurrentDirectory() & "\Archive") Then
                 My.Computer.FileSystem.CreateDirectory(Directory.GetCurrentDirectory() & "\Archive")
             End If
-            Dim archive As String = Directory.GetCurrentDirectory() & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
-            If My.Computer.FileSystem.FileExists(archive) Then
-                My.Computer.FileSystem.DeleteFile(archive)
-            End If
+
+            Dim archive As String = Directory.GetCurrentDirectory() & "\Archive\" & Date.Now.ToString("MM_dd_yyyy_hh_mm_ss") & "_" & My.Computer.FileSystem.GetFileInfo(callList).Name
 
             If File.Exists(callList) Then File.Move(callList, archive)
 
