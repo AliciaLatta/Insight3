@@ -81,26 +81,7 @@ Public Class DataExport
             End If
         End Try
     End Function
-    '=================================================================================================
-    'Method Name:	DataExport.ArchiveCallList
-    'Description:	Writes and executes the FTP script
-    'Property of Archipelago Systems, LLC.
-    '=================================================================================================
-    Public Function ArchiveCallList(ByVal cust As Customer) As Boolean
-        Try
-            'Create the directories if they're not there already
-            Dim archive As String()
-            archive = cust.ArchivePath.Split(".")
-            archive(0) = archive(0) & "_" & Date.Now.Ticks
-            archive(0) = archive(0) & ".txt"
-            CheckForMissingDirectory(cust.ArchivePath)
-            'Move the file to the archive
-            File.Move(output.CallListPath, archive(0).ToString())
-        Catch ex As Exception
-            Throw ex
-        End Try
-        Return True
-    End Function
+   
     '=================================================================================================
     'Method Name:	DataExport.UpdateResults
     'Description:	Updates a string that holds the results of the execution of the integration file creation code
@@ -225,11 +206,11 @@ Public Class DataExport
                 Dim callsWriter As StreamWriter
                 Try
                     'This is where we will open and write the call list
-                    callList = GetCurrentDirectory() & "\" & "CallList" & cust.ClinicName & "_" & gCallDate & "-" & cust.ID & ".csv"
-                    ReplaceConfigSettings("CallListFile", callList)
+                    callList = Directory.GetCurrentDirectory() & "\" & "CallList" & cust.ClinicName & "_" & gCallDate & "-" & cust.ID & ".csv"
                     If My.Computer.FileSystem.FileExists(callList) Then
                         My.Computer.FileSystem.DeleteFile(callList)
                     End If
+                    ReplaceConfigSettings("CallList", callList)
                     output.CallListPath = callList
                     callsWriter = New StreamWriter(callList)
                     callRows.Add("*EOF*")
@@ -272,11 +253,12 @@ Public Class DataExport
         End Try
     End Sub
 
-    Private Sub ReplaceConfigSettings(ByVal key As String, ByVal val As String)
-        Dim xDoc As New Xml.XmlDataDocument
+    Public Shared Sub ReplaceConfigSettings(ByVal key As String, ByVal val As String)
+       Dim xDoc As New Xml.XmlDataDocument
         Dim xNode As Xml.XmlNode
-        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
-        xDoc.Load(path(0)) 
+        Dim path As String() = Directory.GetFiles(Directory.GetCurrentDirectory, "Call_List_Creation.exe.config")
+        xDoc.Load(path(0))
+        'For Each xNode In xDoc 
         For Each xNode In xDoc("configuration")("appSettings")
             If (xNode.Name = "add") Then
                 If (xNode.Attributes.GetNamedItem("key").Value = key) Then
@@ -286,15 +268,25 @@ Public Class DataExport
             End If
         Next
         xDoc.Save(path(0))
-    End Sub
-    Public Shared Function GetCurrentDirectory() As String
-        Dim retval As String
-        retval = Directory.GetCurrentDirectory
-        If retval.Contains("bin") Then
-            retval = retval.Substring(0, retval.Length - 4)
+        xDoc = Nothing
+        xDoc = New Xml.XmlDataDocument
+        'If running local, need to save to second config
+        If Directory.GetCurrentDirectory.Contains("bin") Then
+            path = Directory.GetFiles("..\", "app.config")
+            xDoc.Load(path(0))
+            'For Each xNode In xDoc 
+            For Each xNode In xDoc("configuration")("appSettings")
+                If (xNode.Name = "add") Then
+                    If (xNode.Attributes.GetNamedItem("key").Value = key) Then
+                        xNode.Attributes.GetNamedItem("value").Value = val
+                        Exit For
+                    End If
+                End If
+            Next
+            xDoc.Save(path(0))
         End If
-        Return retval
-    End Function
+    End Sub
+   
     Private Function ProcessRow(ByVal row As DataRow, ByVal cust As Customer) As ProcessedRow
         Dim InsightProviderID, IVRProviderID As String
         Dim apptDate As Date
@@ -329,25 +321,25 @@ Public Class DataExport
         InsightProviderID = row(6).ToString.Trim
 
         Try
-            If cust.UseCSV Then
-                If Not GetProviderID_FromCSV(IVRProviderID, InsightProviderID, cust) Then
-                    retval.Msg = String.Empty
-                    retval.Type = ProcessingStatus.SkippedRow
-                    Return retval
-                End If
-            Else
+            If cust.CSVPath.Contains("ProviderList.txt") Then
                 Dim providerIDs As Array
-                Dim reader As New StreamReader("..\ProviderList.txt")
+                Dim reader As New StreamReader(cust.CSVPath)
                 Dim line As String
 
                 Do Until reader.EndOfStream
                     line = reader.ReadLine
                     providerIDs = Split(line, ",")
-                    If providerIDs(1).ToString().Contains(InsightProviderID) Then
+                    If String.Equals(providerIDs(1).ToString.Trim, InsightProviderID.Trim) Then
                         IVRProviderID = providerIDs(0).ToString()
                         Exit Do
                     End If
                 Loop
+            Else
+                If Not GetProviderID_FromCSV(IVRProviderID, InsightProviderID, cust) Then
+                    retval.Msg = String.Empty
+                    retval.Type = ProcessingStatus.SkippedRow
+                    Return retval
+                End If
             End If
         Catch ex As Exception
             If _error = csvProviderProblem Then
@@ -396,7 +388,6 @@ Public Class DataExport
         Public Property AreaCode As String
         Public Property DaysPrior As Integer
         Public Property ArchivePath As String
-        Public Property UseCSV As Boolean
         Public Property RowCount As Integer
         Public Property ProcessedCount As Integer
         Public Property SkippedCount As Integer
@@ -674,26 +665,6 @@ Public Class DataExport
             reader = Nothing
         End Try
     End Function
-
-    'Private Function GetProviderID_FromConfig(ByRef IVRProviderID As String, ByVal InsightProviderID As String) As Boolean
-    '    Dim z As Integer = 1
-    '    Dim done As Boolean = False
-    '    Do Until done = True Or z = CType(ConfigurationManager.AppSettings("EngineProviderTotal"), Integer)
-    '        IVRProviderID = "EngineProvider" & z
-    '        If ConfigurationManager.AppSettings(IVRProviderID).ToString().ToUpper = InsightProviderID.ToUpper Then
-    '            IVRProviderID = z
-    '            done = True
-    '        Else
-    '            z += 1
-    '        End If
-    '    Loop
-    '    If done Then
-    '        Return True
-    '    Else
-    '        _error = DataExport.providerIDNotFoundConfig
-    '    End If
-    '    Return False
-    'End Function
 
     Private Function GetProviderID_FromCSV(ByRef IVRProviderID As String, ByVal InsightProviderID As String, ByVal cust As Customer) As Boolean
         '*****************************************************************************************************

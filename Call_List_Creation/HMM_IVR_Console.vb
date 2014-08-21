@@ -45,8 +45,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents lblTypeMsg As System.Windows.Forms.Label
     Friend WithEvents btnAddNew As System.Windows.Forms.Button
     Friend WithEvents txtNewType As System.Windows.Forms.TextBox
-    Friend WithEvents ListBox2 As System.Windows.Forms.ListBox
-    Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents ListBox1 As System.Windows.Forms.ListBox
     Friend WithEvents txtDaysPrior As System.Windows.Forms.TextBox
@@ -59,7 +57,6 @@ Public Class HMM_IVR_Console
     Friend WithEvents lblCallLogic As System.Windows.Forms.Label
     Friend WithEvents ChooseCSV As System.Windows.Forms.Button
     Friend WithEvents lblCSVFile As System.Windows.Forms.Label
-    Friend WithEvents chkUseCSV As System.Windows.Forms.CheckBox
     Friend WithEvents Label17 As System.Windows.Forms.Label
     Friend WithEvents txtAreaCode As System.Windows.Forms.TextBox
     Friend WithEvents Label1 As System.Windows.Forms.Label
@@ -73,8 +70,6 @@ Public Class HMM_IVR_Console
         Me.lblTypeMsg = New System.Windows.Forms.Label()
         Me.btnAddNew = New System.Windows.Forms.Button()
         Me.txtNewType = New System.Windows.Forms.TextBox()
-        Me.ListBox2 = New System.Windows.Forms.ListBox()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.ListBox1 = New System.Windows.Forms.ListBox()
         Me.txtDaysPrior = New System.Windows.Forms.TextBox()
@@ -86,7 +81,6 @@ Public Class HMM_IVR_Console
         Me.Label11 = New System.Windows.Forms.Label()
         Me.lblCallLogic = New System.Windows.Forms.Label()
         Me.ChooseCSV = New System.Windows.Forms.Button()
-        Me.chkUseCSV = New System.Windows.Forms.CheckBox()
         Me.lblCSVFile = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.txtCustID = New System.Windows.Forms.TextBox()
@@ -98,8 +92,8 @@ Public Class HMM_IVR_Console
         '
         'Label15
         '
-        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.Location = New System.Drawing.Point(207, 18)
+        Me.Label15.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label15.Location = New System.Drawing.Point(246, 18)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(128, 23)
         Me.Label15.TabIndex = 36
@@ -107,17 +101,18 @@ Public Class HMM_IVR_Console
         '
         'btnDeleteType
         '
-        Me.btnDeleteType.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnDeleteType.Location = New System.Drawing.Point(235, 148)
+        Me.btnDeleteType.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnDeleteType.Location = New System.Drawing.Point(235, 162)
         Me.btnDeleteType.Name = "btnDeleteType"
-        Me.btnDeleteType.Size = New System.Drawing.Size(56, 23)
+        Me.btnDeleteType.Size = New System.Drawing.Size(75, 23)
         Me.btnDeleteType.TabIndex = 57
         Me.btnDeleteType.Text = "Remove"
         '
         'lblTypeMsg
         '
+        Me.lblTypeMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblTypeMsg.ForeColor = System.Drawing.Color.Red
-        Me.lblTypeMsg.Location = New System.Drawing.Point(84, 153)
+        Me.lblTypeMsg.Location = New System.Drawing.Point(84, 167)
         Me.lblTypeMsg.Name = "lblTypeMsg"
         Me.lblTypeMsg.Size = New System.Drawing.Size(135, 34)
         Me.lblTypeMsg.TabIndex = 102
@@ -125,79 +120,62 @@ Public Class HMM_IVR_Console
         '
         'btnAddNew
         '
-        Me.btnAddNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnAddNew.Location = New System.Drawing.Point(235, 116)
+        Me.btnAddNew.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAddNew.Location = New System.Drawing.Point(235, 130)
         Me.btnAddNew.Name = "btnAddNew"
-        Me.btnAddNew.Size = New System.Drawing.Size(56, 23)
+        Me.btnAddNew.Size = New System.Drawing.Size(75, 23)
         Me.btnAddNew.TabIndex = 101
         Me.btnAddNew.Text = ">"
         '
         'txtNewType
         '
-        Me.txtNewType.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtNewType.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtNewType.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtNewType.Location = New System.Drawing.Point(83, 116)
+        Me.txtNewType.Location = New System.Drawing.Point(83, 130)
         Me.txtNewType.Name = "txtNewType"
-        Me.txtNewType.Size = New System.Drawing.Size(136, 20)
+        Me.txtNewType.Size = New System.Drawing.Size(136, 22)
         Me.txtNewType.TabIndex = 100
-        '
-        'ListBox2
-        '
-        Me.ListBox2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ListBox2.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ListBox2.Location = New System.Drawing.Point(82, 223)
-        Me.ListBox2.Name = "ListBox2"
-        Me.ListBox2.Size = New System.Drawing.Size(352, 95)
-        Me.ListBox2.TabIndex = 99
-        '
-        'Label7
-        '
-        Me.Label7.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(79, 205)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(96, 23)
-        Me.Label7.TabIndex = 98
-        Me.Label7.Text = "Provider List:"
         '
         'Label5
         '
-        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(79, 92)
+        Me.Label5.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Location = New System.Drawing.Point(79, 98)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(279, 16)
+        Me.Label5.Size = New System.Drawing.Size(404, 21)
         Me.Label5.TabIndex = 97
         Me.Label5.Text = "Appt/meeting types in the box will NOT be called:"
         '
         'ListBox1
         '
-        Me.ListBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ListBox1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ListBox1.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.ListBox1.Location = New System.Drawing.Point(304, 116)
+        Me.ListBox1.ItemHeight = 16
+        Me.ListBox1.Location = New System.Drawing.Point(344, 130)
         Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(160, 95)
+        Me.ListBox1.Size = New System.Drawing.Size(181, 100)
         Me.ListBox1.TabIndex = 96
         '
         'txtDaysPrior
         '
         Me.txtDaysPrior.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtDaysPrior.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtDaysPrior.Location = New System.Drawing.Point(307, 64)
+        Me.txtDaysPrior.Location = New System.Drawing.Point(363, 68)
         Me.txtDaysPrior.Name = "txtDaysPrior"
         Me.txtDaysPrior.Size = New System.Drawing.Size(24, 22)
         Me.txtDaysPrior.TabIndex = 93
         '
         'Label4
         '
-        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(79, 67)
+        Me.Label4.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.Location = New System.Drawing.Point(79, 71)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(231, 23)
+        Me.Label4.Size = New System.Drawing.Size(295, 23)
         Me.Label4.TabIndex = 92
         Me.Label4.Text = "No of days calls should be made prior to appt:"
         '
         'Label2
         '
-        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label2.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label2.Location = New System.Drawing.Point(80, 18)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(88, 20)
@@ -206,11 +184,11 @@ Public Class HMM_IVR_Console
         '
         'lblMsg
         '
-        Me.lblMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblMsg.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblMsg.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblMsg.Location = New System.Drawing.Point(7, 453)
+        Me.lblMsg.Location = New System.Drawing.Point(13, 409)
         Me.lblMsg.Name = "lblMsg"
-        Me.lblMsg.Size = New System.Drawing.Size(656, 99)
+        Me.lblMsg.Size = New System.Drawing.Size(646, 140)
         Me.lblMsg.TabIndex = 115
         Me.lblMsg.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -218,74 +196,65 @@ Public Class HMM_IVR_Console
         '
         Me.btnFTP.BackColor = System.Drawing.Color.White
         Me.btnFTP.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnFTP.Location = New System.Drawing.Point(303, 414)
+        Me.btnFTP.Location = New System.Drawing.Point(345, 370)
         Me.btnFTP.Name = "btnFTP"
-        Me.btnFTP.Size = New System.Drawing.Size(222, 27)
+        Me.btnFTP.Size = New System.Drawing.Size(180, 27)
         Me.btnFTP.TabIndex = 114
-        Me.btnFTP.Text = "Upload Call List to IVR Server"
+        Me.btnFTP.Text = "UPLOAD"
         Me.btnFTP.UseVisualStyleBackColor = False
         '
         'btnCreateFile
         '
         Me.btnCreateFile.BackColor = System.Drawing.Color.White
         Me.btnCreateFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCreateFile.Location = New System.Drawing.Point(85, 414)
+        Me.btnCreateFile.Location = New System.Drawing.Point(85, 370)
         Me.btnCreateFile.Name = "btnCreateFile"
-        Me.btnCreateFile.Size = New System.Drawing.Size(138, 27)
+        Me.btnCreateFile.Size = New System.Drawing.Size(151, 27)
         Me.btnCreateFile.TabIndex = 113
-        Me.btnCreateFile.Text = "Create Call List "
+        Me.btnCreateFile.Text = "CREATE"
         Me.btnCreateFile.UseVisualStyleBackColor = False
         '
         'Label11
         '
-        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(80, 43)
+        Me.Label11.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label11.Location = New System.Drawing.Point(80, 46)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(60, 23)
+        Me.Label11.Size = New System.Drawing.Size(88, 23)
         Me.Label11.TabIndex = 111
         Me.Label11.Text = "Call Logic:"
         '
         'lblCallLogic
         '
-        Me.lblCallLogic.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCallLogic.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCallLogic.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblCallLogic.Location = New System.Drawing.Point(143, 41)
+        Me.lblCallLogic.Location = New System.Drawing.Point(166, 44)
         Me.lblCallLogic.Name = "lblCallLogic"
-        Me.lblCallLogic.Size = New System.Drawing.Size(433, 23)
+        Me.lblCallLogic.Size = New System.Drawing.Size(469, 23)
         Me.lblCallLogic.TabIndex = 110
         Me.lblCallLogic.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'ChooseCSV
         '
-        Me.ChooseCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChooseCSV.Location = New System.Drawing.Point(172, 327)
+        Me.ChooseCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ChooseCSV.Location = New System.Drawing.Point(172, 237)
         Me.ChooseCSV.Name = "ChooseCSV"
         Me.ChooseCSV.Size = New System.Drawing.Size(34, 23)
         Me.ChooseCSV.TabIndex = 116
         Me.ChooseCSV.Text = "..."
         '
-        'chkUseCSV
-        '
-        Me.chkUseCSV.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkUseCSV.Location = New System.Drawing.Point(448, 229)
-        Me.chkUseCSV.Name = "chkUseCSV"
-        Me.chkUseCSV.Size = New System.Drawing.Size(176, 40)
-        Me.chkUseCSV.TabIndex = 117
-        Me.chkUseCSV.Text = "Use CSV File for Provider List"
-        '
         'lblCSVFile
         '
-        Me.lblCSVFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCSVFile.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblCSVFile.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblCSVFile.Location = New System.Drawing.Point(212, 327)
+        Me.lblCSVFile.Location = New System.Drawing.Point(212, 237)
         Me.lblCSVFile.Name = "lblCSVFile"
-        Me.lblCSVFile.Size = New System.Drawing.Size(402, 39)
+        Me.lblCSVFile.Size = New System.Drawing.Size(402, 58)
         Me.lblCSVFile.TabIndex = 118
         '
         'Label17
         '
-        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label17.Location = New System.Drawing.Point(81, 332)
+        Me.Label17.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label17.Location = New System.Drawing.Point(81, 242)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(85, 23)
         Me.Label17.TabIndex = 119
@@ -293,43 +262,43 @@ Public Class HMM_IVR_Console
         '
         'txtCustID
         '
-        Me.txtCustID.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCustID.Location = New System.Drawing.Point(149, 16)
+        Me.txtCustID.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCustID.Location = New System.Drawing.Point(166, 16)
         Me.txtCustID.Name = "txtCustID"
-        Me.txtCustID.Size = New System.Drawing.Size(52, 20)
+        Me.txtCustID.Size = New System.Drawing.Size(70, 22)
         Me.txtCustID.TabIndex = 120
         '
         'txtAreaCode
         '
         Me.txtAreaCode.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtAreaCode.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.txtAreaCode.Location = New System.Drawing.Point(303, 15)
+        Me.txtAreaCode.Location = New System.Drawing.Point(371, 15)
         Me.txtAreaCode.Name = "txtAreaCode"
-        Me.txtAreaCode.Size = New System.Drawing.Size(38, 22)
+        Me.txtAreaCode.Size = New System.Drawing.Size(57, 22)
         Me.txtAreaCode.TabIndex = 121
         '
         'Label1
         '
-        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(82, 380)
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(82, 303)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(85, 23)
+        Me.Label1.Size = New System.Drawing.Size(104, 23)
         Me.Label1.TabIndex = 124
         Me.Label1.Text = "Insight Report:"
         '
         'lblInsightReport
         '
-        Me.lblInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblInsightReport.ForeColor = System.Drawing.SystemColors.ActiveCaption
-        Me.lblInsightReport.Location = New System.Drawing.Point(213, 374)
+        Me.lblInsightReport.Location = New System.Drawing.Point(235, 297)
         Me.lblInsightReport.Name = "lblInsightReport"
-        Me.lblInsightReport.Size = New System.Drawing.Size(402, 37)
+        Me.lblInsightReport.Size = New System.Drawing.Size(380, 55)
         Me.lblInsightReport.TabIndex = 123
         '
         'ChooseInsightReport
         '
-        Me.ChooseInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.ChooseInsightReport.Location = New System.Drawing.Point(173, 375)
+        Me.ChooseInsightReport.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.ChooseInsightReport.Location = New System.Drawing.Point(192, 298)
         Me.ChooseInsightReport.Name = "ChooseInsightReport"
         Me.ChooseInsightReport.Size = New System.Drawing.Size(34, 23)
         Me.ChooseInsightReport.TabIndex = 122
@@ -347,7 +316,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.txtCustID)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.lblCSVFile)
-        Me.Controls.Add(Me.chkUseCSV)
         Me.Controls.Add(Me.ChooseCSV)
         Me.Controls.Add(Me.lblMsg)
         Me.Controls.Add(Me.btnFTP)
@@ -357,8 +325,6 @@ Public Class HMM_IVR_Console
         Me.Controls.Add(Me.lblTypeMsg)
         Me.Controls.Add(Me.btnAddNew)
         Me.Controls.Add(Me.txtNewType)
-        Me.Controls.Add(Me.ListBox2)
-        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.ListBox1)
         Me.Controls.Add(Me.txtDaysPrior)
@@ -369,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Appointment Reminder Call List Creation Tool (Version 7.3.7)"
+        Me.Text = "Call List Creation Tool (Version 7.3.95)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -382,9 +348,6 @@ Public Class HMM_IVR_Console
     Private Sub HMM_IVR_Console_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         '   configPath = ConfigurationManager.AppSettings("AppConfigPath").ToString
         GetConfigValues()
-        If ConfigurationManager.AppSettings("UseCSV").ToUpper = "TRUE" Then
-            chkUseCSV.Checked = True
-        End If
     End Sub
     Private Sub GetConfigValues()
         txtCustID.Text = Trim(ConfigurationManager.AppSettings("CustId").ToString)
@@ -395,12 +358,10 @@ Public Class HMM_IVR_Console
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "The config file must have an accurate value for MeetingSkipTypeTotal."
         End If
-       
-        BuildProviderListBox()
-
-        txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString).ToUpper
-        lblCSVFile.Text = GetCurrentDirectory & "\" & Trim(ConfigurationManager.AppSettings("CSVFileName").ToString).ToUpper
-        Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFilePath").ToString).ToUpper
+    
+        txtAreaCode.Text = Trim(ConfigurationManager.AppSettings("DefaultAreaCode").ToString)
+        lblCSVFile.Text = Trim(ConfigurationManager.AppSettings("ProviderList").ToString)
+        Me.lblInsightReport.Text = Trim(ConfigurationManager.AppSettings("ReportFile").ToString)
         If Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "NONEBUT" Then
             lblCallLogic.Text = "Only numbers ending in OK will be called"
         ElseIf Trim(ConfigurationManager.AppSettings("CallLogic").ToString.ToUpper) = "ALLBUT" Then
@@ -441,47 +402,12 @@ Public Class HMM_IVR_Console
             lblMsg.Text = "There was an error populating the Meeting Skip Types.  Please review the config file for the problem."
         End Try
     End Sub
-    Private Sub BuildProviderListBox()
-        Dim providerIDs As Array
-        Dim reader As StreamReader
-        Dim line As String
-        Try
-            If File.Exists("..\ProviderList.txt") Then
-                reader = New StreamReader("..\ProviderList.txt")
-                Do Until reader.EndOfStream
-                    line = reader.ReadLine
-                    providerIDs = Split(line, ",")
-                    ListBox2.Items.Add("Report Provider ID " & providerIDs(1))
-                Loop
-            End If
-        Catch e As Exception
-            lblMsg.ForeColor = System.Drawing.Color.Red
-            lblMsg.Text = "There was an error populating the Providers.  Please review the config file for the problem."
-        End Try
-    End Sub
-
-    Private Sub ReplaceConfigSettings(ByVal key As String, ByVal val As String)
-        Dim xDoc As New Xml.XmlDataDocument
-        Dim xNode As Xml.XmlNode
-        Dim path As String() = Directory.GetFiles(GetCurrentDirectory, "*.config")
-        xDoc.Load(path(0))
-        'For Each xNode In xDoc 
-        For Each xNode In xDoc("configuration")("appSettings")
-            If (xNode.Name = "add") Then
-                If (xNode.Attributes.GetNamedItem("key").Value = key) Then
-                    xNode.Attributes.GetNamedItem("value").Value = val
-                    Exit For
-                End If
-            End If
-        Next
-        xDoc.Save(path(0))
-    End Sub
 
     Private Sub FTP()
         Dim host As String = ConfigurationManager.AppSettings("Server").ToString
         Dim username As String = ConfigurationManager.AppSettings("Username").ToString
         Dim password As String = ConfigurationManager.AppSettings("Password").ToString
-        Dim callList As String = GetCurrentDirectory() & "\" & ConfigurationManager.AppSettings("CallListFileName").ToString
+        Dim callList As String = ConfigurationManager.AppSettings("CallList").ToString
         Dim URI As String
         Dim ftp As System.Net.FtpWebRequest
 
@@ -512,16 +438,18 @@ Public Class HMM_IVR_Console
 
             'Archive
             'Create archive folder if it doesn't already exist
-            If Not My.Computer.FileSystem.DirectoryExists(GetCurrentDirectory() & "\Archive") Then
-                My.Computer.FileSystem.CreateDirectory(GetCurrentDirectory() & "\Archive")
+            If Not My.Computer.FileSystem.DirectoryExists(Directory.GetCurrentDirectory() & "\Archive") Then
+                My.Computer.FileSystem.CreateDirectory(Directory.GetCurrentDirectory() & "\Archive")
             End If
-            Dim archive As String = GetCurrentDirectory() & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
+            Dim archive As String = Directory.GetCurrentDirectory() & "\Archive\" & My.Computer.FileSystem.GetFileInfo(callList).Name
             If My.Computer.FileSystem.FileExists(archive) Then
                 My.Computer.FileSystem.DeleteFile(archive)
             End If
 
             If File.Exists(callList) Then File.Move(callList, archive)
 
+            lblMsg.Text = "Call list successfully uploaded to server."
+            lblMsg.ForeColor = Color.Blue
         Catch ex As Exception
             Throw ex
         End Try
@@ -566,9 +494,8 @@ Public Class HMM_IVR_Console
     Private Sub Save()
         ReplaceConfigSettings("CustId", txtCustID.Text)
         ReplaceConfigSettings("DefaultAreaCode", txtAreaCode.Text)
-        ReplaceConfigSettings("UseCSV", chkUseCSV.Checked)
-        ReplaceConfigSettings("CSVFileName", lblCSVFile.Text.Trim.Substring(lblCSVFile.Text.Trim.LastIndexOf("\") + 1))
-        ReplaceConfigSettings("ReportFilePath", Me.lblInsightReport.Text.Trim)
+        ReplaceConfigSettings("ProviderList", lblCSVFile.Text.Trim)
+        ReplaceConfigSettings("ReportFile", Me.lblInsightReport.Text.Trim)
         'Save ListBox of meeting types to skip
         Dim x As Integer
         Dim meetingType As String
@@ -587,17 +514,16 @@ Public Class HMM_IVR_Console
         cust.ClinicName = ConfigurationManager.AppSettings("ClinicName").Trim
         cust.DaysPrior = IIf(txtDaysPrior.Text.Trim.Length > 0, txtDaysPrior.Text.Trim, 0)
         cust.AreaCode = txtAreaCode.Text.Trim
-        cust.UseCSV = chkUseCSV.Checked
         cust.ReportPath = lblInsightReport.Text.Trim
-        cust.ArchivePath = GetCurrentDirectory() & "\Archive"
+        cust.ArchivePath = Directory.GetCurrentDirectory() & "\Archive"
         cust.CSVPath = lblCSVFile.Text.Trim
         cust.Engine = ConfigurationManager.AppSettings("Engine").Trim
-        cust.ErrorPath = GetCurrentDirectory() & "\Exception.txt"
+        cust.ErrorPath = Directory.GetCurrentDirectory() & "\Exception.txt"
         cust.CallLogic = ConfigurationManager.AppSettings("CallLogic").Trim
     End Sub
-    Private Function NumberOfCallsWritten() As Integer
+    Private Function CallsWritten() As Boolean
         Dim reportReader As StreamReader
-        Dim callfile As String = GetCurrentDirectory & "\" & ConfigurationManager.AppSettings("CallListFileName")
+        Dim callfile As String = ConfigurationManager.AppSettings("CallList")
         Try
             Dim line As String
             Dim writtenCounter As Integer = -1
@@ -608,13 +534,12 @@ Public Class HMM_IVR_Console
                 Do While Not line Is Nothing
                     If line.Length > 0 Then
                         writtenCounter += 1
+                        If writtenCounter > 0 Then Return True
                     End If
                     line = reportReader.ReadLine
                 Loop
-                Return writtenCounter
-            Else
-                Return 0
             End If
+            Return False
         Catch ex As Exception
             Throw ex
         Finally
@@ -676,7 +601,6 @@ Public Class HMM_IVR_Console
     End Sub
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
-        Dim useCSV As Boolean
         Dim x As Integer
         cust = New Customer
         cursor.Current() = System.Windows.Forms.Cursors.WaitCursor
@@ -688,18 +612,6 @@ Public Class HMM_IVR_Console
             lblMsg.ForeColor = System.Drawing.Color.Red
             lblMsg.Text = "Customer ID is missing."
             Exit Sub
-        End If
-       
-        'If the Use CSV option is selected, a file must be chosen
-        If chkUseCSV.Checked Then
-            If Trim(lblCSVFile.Text) = "" Then
-                lblMsg.ForeColor = System.Drawing.Color.Red
-                lblMsg.Text = "Please select a CSV file."
-                Exit Sub
-            End If
-            useCSV = True
-        Else
-            useCSV = False
         End If
     
         'Build array of values from ListBox
@@ -731,16 +643,13 @@ Public Class HMM_IVR_Console
 
     Private Sub btnFTP_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFTP.Click
         Try
-            If Me.NumberOfCallsWritten <= 0 Then
+            If CallsWritten() Then
+                FTP()
+            Else
                 lblMsg.Text = "There are no rows in the call list file."
                 lblMsg.ForeColor = Color.Red
                 Exit Sub
             End If
-
-            FTP()
-
-            lblMsg.Text = "Call list successfully uploaded to server."
-            lblMsg.ForeColor = Color.Blue
         Catch ex As Exception
             lblMsg.Text = ex.Message
             lblMsg.ForeColor = Color.Red
@@ -759,4 +668,7 @@ Public Class HMM_IVR_Console
         End If
     End Sub
 
+    Private Sub lblMsg_Click(sender As Object, e As EventArgs) Handles lblMsg.Click
+
+    End Sub
 End Class
