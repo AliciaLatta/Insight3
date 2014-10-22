@@ -102,16 +102,16 @@
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6DA3347A2745CFAA8ED58AE38C7CC9F834786A43</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint></ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Call_List_Creation_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile></ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests></SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AxInterop.SHDocVw">
@@ -159,7 +159,6 @@
       <DependentUpon>Application.myapp</DependentUpon>
     </Compile>
     <None Include="App.config" />
-    <None Include="Call_List_Creation_TemporaryKey.pfx" />
     <None Include="DevelopmentApp.config" />
     <Compile Include="AssemblyInfo.vb">
       <SubType>Code</SubType>

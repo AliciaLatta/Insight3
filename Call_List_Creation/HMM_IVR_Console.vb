@@ -335,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Call List Creation Tool (Version 7.3.96)"
+        Me.Text = "Call List Creation Tool (Version 7.3.97)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -519,7 +519,7 @@ Public Class HMM_IVR_Console
         cust.ErrorPath = Directory.GetCurrentDirectory() & "\Exception.txt"
         cust.CallLogic = ConfigurationManager.AppSettings("CallLogic").Trim
     End Sub
-    Private Function CallsWritten() As Boolean
+    Private Function CallsWritten() As String
         Dim reportReader As StreamReader
         Dim callfile As String = ConfigurationManager.AppSettings("CallList")
         Try
@@ -532,12 +532,12 @@ Public Class HMM_IVR_Console
                 Do While Not line Is Nothing
                     If line.Length > 0 Then
                         writtenCounter += 1
-                        If writtenCounter > 0 Then Return True
+                        If writtenCounter > 0 Then Return "true"
                     End If
                     line = reportReader.ReadLine
                 Loop
             End If
-            Return False
+            Return "File not found: " & callfile
         Catch ex As Exception
             Throw ex
         Finally
@@ -641,10 +641,11 @@ Public Class HMM_IVR_Console
 
     Private Sub btnFTP_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFTP.Click
         Try
-            If CallsWritten() Then
+            Dim status As String = CallsWritten()
+            If status.ToLower.StartsWith("true") Then
                 FTP()
             Else
-                lblMsg.Text = "There are no rows in the call list file."
+                lblMsg.Text = status
                 lblMsg.ForeColor = Color.Red
                 Exit Sub
             End If
