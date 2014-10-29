@@ -335,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Call List Creation Tool (Version 7.3.97)"
+        Me.Text = "Call List Creation Tool (Version 7.3.99)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -403,6 +403,20 @@ Public Class HMM_IVR_Console
         End Try
     End Sub
 
+    Private Sub Archive()
+        Dim callList As String = ConfigurationManager.AppSettings("CallList").ToString
+
+        If Not My.Computer.FileSystem.DirectoryExists(Directory.GetCurrentDirectory() & "\Archive") Then
+            My.Computer.FileSystem.CreateDirectory(Directory.GetCurrentDirectory() & "\Archive")
+        End If
+
+        Dim archive As String = Directory.GetCurrentDirectory() & "\Archive\" & Date.Now.ToString("MM_dd_yyyy_hh_mm_ss") & "_" & My.Computer.FileSystem.GetFileInfo(callList).Name
+
+        If File.Exists(callList) Then
+            File.Move(callList, archive)
+        Else : WriteToEventLog("No File to Archive: " & callList, , EventLogEntryType.Warning)
+        End If
+    End Sub
     Private Sub FTP()
         Dim host As String = ConfigurationManager.AppSettings("Server").ToString
         Dim username As String = ConfigurationManager.AppSettings("Username").ToString
@@ -435,16 +449,6 @@ Public Class HMM_IVR_Console
             clsStream.Write(bFile, 0, bFile.Length)
             clsStream.Close()
             clsStream.Dispose()
-
-            'Archive
-            'Create archive folder if it doesn't already exist
-            If Not My.Computer.FileSystem.DirectoryExists(Directory.GetCurrentDirectory() & "\Archive") Then
-                My.Computer.FileSystem.CreateDirectory(Directory.GetCurrentDirectory() & "\Archive")
-            End If
-
-            Dim archive As String = Directory.GetCurrentDirectory() & "\Archive\" & Date.Now.ToString("MM_dd_yyyy_hh_mm_ss") & "_" & My.Computer.FileSystem.GetFileInfo(callList).Name
-
-            If File.Exists(callList) Then File.Move(callList, archive)
 
             lblMsg.Text = "Call list successfully uploaded to server."
             lblMsg.ForeColor = Color.Blue
@@ -605,38 +609,50 @@ Public Class HMM_IVR_Console
         lblMsg.ForeColor = System.Drawing.Color.Black
         lblMsg.Text = ""
 
-        'The customer id must not be blank
-        If Trim(txtCustID.Text) = "" Then
-            lblMsg.ForeColor = System.Drawing.Color.Red
-            lblMsg.Text = "Customer ID is missing."
-            Exit Sub
-        End If
-    
-        'Build array of values from ListBox
-        x = 0
-        Do Until x = ListBox1.Items.Count
-            cust.meetingTypeArray.Add(ListBox1.Items.Item(x))
-            x += 1
-        Loop
-
+       
         Try
-            Save()
+            'Archive from prior run
+            Try
+                Archive()
+            Catch ex As Exception
+                WriteToEventLog(ex.Message)
+            End Try
+            'The customer id must not be blank
+            If Trim(txtCustID.Text) = "" Then
+                lblMsg.ForeColor = System.Drawing.Color.Red
+                lblMsg.Text = "Customer ID is missing."
+                Exit Sub
+            End If
+
+            'Build array of values from ListBox
+            x = 0
+            Do Until x = ListBox1.Items.Count
+                cust.meetingTypeArray.Add(ListBox1.Items.Item(x))
+                x += 1
+            Loop
+
+            Try
+                Save()
+            Catch ex As Exception
+                lblMsg.Text = ex.Message
+                WriteToEventLog(ex.Message, , EventLogEntryType.Error)
+                Exit Sub
+            End Try
+            output = New OutputResults
+            output = export.Main(cust)
+
+            lblMsg.Text = output.Msg
+
+            If Not output.FatalError Then
+                lblMsg.ForeColor = System.Drawing.Color.Black
+                If output.CallsCount > 0 Then Shell("notepad " & output.CallListPath, AppWinStyle.NormalFocus)
+                If output.ExceptionCount > 0 Then Shell("notepad " & cust.ErrorPath, AppWinStyle.NormalFocus)
+            Else
+                lblMsg.ForeColor = System.Drawing.Color.Red
+            End If
         Catch ex As Exception
-            lblMsg.Text = ex.Message
-            Exit Sub
+            WriteToEventLog(ex.Message, , EventLogEntryType.Error)
         End Try
-        output = New OutputResults
-        output = export.Main(cust)
-
-        lblMsg.Text = output.Msg
-
-        If Not output.FatalError Then
-            lblMsg.ForeColor = System.Drawing.Color.Black
-            If output.CallsCount > 0 Then Shell("notepad " & output.CallListPath, AppWinStyle.NormalFocus)
-            If output.ExceptionCount > 0 Then Shell("notepad " & cust.ErrorPath, AppWinStyle.NormalFocus)
-        Else
-            lblMsg.ForeColor = System.Drawing.Color.Red
-        End If
     End Sub
 
     Private Sub btnFTP_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnFTP.Click
@@ -667,7 +683,31 @@ Public Class HMM_IVR_Console
         End If
     End Sub
 
-    Private Sub lblMsg_Click(sender As Object, e As EventArgs) Handles lblMsg.Click
+    Public Function WriteToEventLog(ByVal Entry As String, _
+            Optional ByVal AppName As String = "Call List Creation", _
+            Optional ByVal EventType As  _
+            EventLogEntryType = EventLogEntryType.Error, _
+            Optional ByVal LogName As String = "Application") As Boolean
 
-    End Sub
+        Dim objEventLog As New EventLog()
+
+        Try
+            'Register the App as an Event Source
+            If Not EventLog.SourceExists(AppName) Then
+                EventLog.CreateEventSource(AppName, LogName)
+            End If
+
+            objEventLog.Source = AppName
+
+            'WriteEntry is overloaded; this is one
+            'of 10 ways to call it
+            objEventLog.WriteEntry(Entry, EventType)
+            Return True
+        Catch Ex As Exception
+            Return False
+
+        End Try
+
+    End Function
+
 End Class
