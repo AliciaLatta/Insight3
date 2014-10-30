@@ -335,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Call List Creation Tool (Version 7.3.99)"
+        Me.Text = "Call List Creation Tool (Version 7.3.991)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -404,8 +404,12 @@ Public Class HMM_IVR_Console
     End Sub
 
     Private Sub Archive()
-        Dim callList As String = ConfigurationManager.AppSettings("CallList").ToString
-
+        Dim callList As String
+        If output Is Nothing OrElse output.CallListPath Is Nothing OrElse output.CallListPath.Length < 1 Then
+            callList = ConfigurationManager.AppSettings("CallList")
+        Else
+            callList = output.CallListPath
+        End If
         If Not My.Computer.FileSystem.DirectoryExists(Directory.GetCurrentDirectory() & "\Archive") Then
             My.Computer.FileSystem.CreateDirectory(Directory.GetCurrentDirectory() & "\Archive")
         End If
@@ -525,7 +529,14 @@ Public Class HMM_IVR_Console
     End Sub
     Private Function CallsWritten() As String
         Dim reportReader As StreamReader
-        Dim callfile As String = ConfigurationManager.AppSettings("CallList")
+
+        Dim callfile As String
+        If output Is Nothing OrElse output.CallListPath Is Nothing OrElse output.CallListPath.Length < 1 Then
+            callfile = ConfigurationManager.AppSettings("CallList")
+        Else
+            callfile = output.CallListPath
+        End If
+
         Try
             Dim line As String
             Dim writtenCounter As Integer = -1
@@ -601,6 +612,7 @@ Public Class HMM_IVR_Console
             lblCSVFile.Text = fDialog.FileName.ToString()
         End If
     End Sub
+
     Private Sub btnCreateFile_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCreateFile.Click
         Dim export As New DataExport
         Dim x As Integer
@@ -609,14 +621,7 @@ Public Class HMM_IVR_Console
         lblMsg.ForeColor = System.Drawing.Color.Black
         lblMsg.Text = ""
 
-       
         Try
-            'Archive from prior run
-            Try
-                Archive()
-            Catch ex As Exception
-                WriteToEventLog(ex.Message)
-            End Try
             'The customer id must not be blank
             If Trim(txtCustID.Text) = "" Then
                 lblMsg.ForeColor = System.Drawing.Color.Red
@@ -668,6 +673,11 @@ Public Class HMM_IVR_Console
         Catch ex As Exception
             lblMsg.Text = ex.Message
             lblMsg.ForeColor = Color.Red
+        End Try
+        Try
+            Archive()
+        Catch ex As Exception
+            WriteToEventLog(ex.Message)
         End Try
     End Sub
 
