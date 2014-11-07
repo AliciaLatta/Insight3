@@ -200,7 +200,7 @@ Public Class HMM_IVR_Console
         Me.btnFTP.Name = "btnFTP"
         Me.btnFTP.Size = New System.Drawing.Size(180, 27)
         Me.btnFTP.TabIndex = 114
-        Me.btnFTP.Text = "UPLOAD"
+        Me.btnFTP.Text = "SEND Call List"
         Me.btnFTP.UseVisualStyleBackColor = False
         '
         'btnCreateFile
@@ -211,7 +211,7 @@ Public Class HMM_IVR_Console
         Me.btnCreateFile.Name = "btnCreateFile"
         Me.btnCreateFile.Size = New System.Drawing.Size(151, 27)
         Me.btnCreateFile.TabIndex = 113
-        Me.btnCreateFile.Text = "CREATE"
+        Me.btnCreateFile.Text = "CREATE Call List"
         Me.btnCreateFile.UseVisualStyleBackColor = False
         '
         'Label11
@@ -335,7 +335,7 @@ Public Class HMM_IVR_Console
         Me.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "HMM_IVR_Console"
-        Me.Text = "Call List Creation Tool (Version 7.3.991)"
+        Me.Text = "Call List Creation Tool (Version 7.3.992)"
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -456,6 +456,12 @@ Public Class HMM_IVR_Console
 
             lblMsg.Text = "Call list successfully uploaded to server."
             lblMsg.ForeColor = Color.Blue
+
+            Try
+                Archive()
+            Catch ex As Exception
+                WriteToEventLog(ex.Message)
+            End Try
         Catch ex As Exception
             Throw ex
         End Try
@@ -531,10 +537,13 @@ Public Class HMM_IVR_Console
         Dim reportReader As StreamReader
 
         Dim callfile As String
+
         If output Is Nothing OrElse output.CallListPath Is Nothing OrElse output.CallListPath.Length < 1 Then
             callfile = ConfigurationManager.AppSettings("CallList")
+            WriteToEventLog("callfile from config = " & callfile, , EventLogEntryType.Information)
         Else
             callfile = output.CallListPath
+            WriteToEventLog("callfile from output.CallListPath = " & callfile, , EventLogEntryType.Information)
         End If
 
         Try
@@ -552,7 +561,7 @@ Public Class HMM_IVR_Console
                     line = reportReader.ReadLine
                 Loop
             End If
-            Return "File not found: " & callfile
+            Return "File not found: " & callfile & ".  Please re-create call list."
         Catch ex As Exception
             Throw ex
         Finally
@@ -673,11 +682,6 @@ Public Class HMM_IVR_Console
         Catch ex As Exception
             lblMsg.Text = ex.Message
             lblMsg.ForeColor = Color.Red
-        End Try
-        Try
-            Archive()
-        Catch ex As Exception
-            WriteToEventLog(ex.Message)
         End Try
     End Sub
 
